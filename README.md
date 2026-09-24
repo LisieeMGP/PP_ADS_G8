@@ -52,23 +52,27 @@ podman-compose --version
 
 3. Na raiz do projeto, construa as imagens e suba o frontend, a API e o PostgreSQL:
 
+- Docker Engine e Docker Compose.
+
 ```bash
 PODMAN_COMPOSE_PROVIDER=podman-compose podman compose up -d --build
+2. Confirme que Docker e Docker Compose estão instalados e que o daemon está em execução:
 ```
 
-4. Confira se os três serviços estão em execução:
+docker --version
+docker compose version
 
-```bash
+````bash
 podman compose ps
-```
+docker compose up -d --build
 
 5. Abra http://localhost:4200 no navegador. Entre com `john` e `changeme` ou use a documentação interativa em http://localhost:3001/api.
-
+docker compose ps
 6. Para confirmar rapidamente que a API está respondendo:
 
 ```bash
 curl http://localhost:3001/
-```
+````
 
 Na primeira execução, a construção pode levar alguns minutos e o PostgreSQL precisa concluir o healthcheck antes de a API iniciar. Se algum serviço não subir, consulte os logs com `PODMAN_COMPOSE_PROVIDER=podman-compose podman compose logs -f`. As portas `4200`, `3001` e `5432` precisam estar livres.
 
@@ -76,27 +80,29 @@ Na primeira execução, a construção pode levar alguns minutos e o PostgreSQL 
 
 O Compose cria os seguintes serviços:
 
-| Serviço          | Container             | Endereço local        |
-| ---------------- | --------------------- | --------------------- |
-| Frontend Angular | `encomendas`          | http://localhost:4200 |
-| API NestJS       | `encomendas-api`      | http://localhost:3001 |
-| PostgreSQL 16    | `encomendas-postgres` | `localhost:5432`      |
+| Serviço | Container | Endereço local |
+| ------- | --------- | -------------- |
 
-Construa as imagens e suba os serviços:
+docker compose up -d --build
+| API NestJS | `encomendas-api` | http://localhost:3001 |
+| PostgreSQL 16 | `encomendas-postgres` | `localhost:5432` |
+docker ps
+docker compose logs -f
+docker compose logs -f encomendas-api
 
-```bash
+````bash
 PODMAN_COMPOSE_PROVIDER=podman-compose podman compose up -d --build
-```
+docker compose down
 
 O banco executa `database/init.sql` automaticamente na primeira inicialização do volume. O script cria as tabelas de usuários, moradores e encomendas e insere dados de exemplo.
-
+docker compose down -v
 Verifique os containers e acompanhe os logs:
 
 ```bash
 podman ps
-PODMAN_COMPOSE_PROVIDER=podman-compose podman compose logs -f
-PODMAN_COMPOSE_PROVIDER=podman-compose podman compose logs -f encomendas-api
-```
+docker build -t localhost/encomendas-postgres:local ./database
+docker volume create postgres-data
+docker run -d \
 
 Acesse o frontend em http://localhost:4200 e o Swagger da API em http://localhost:3001/api.
 
@@ -104,9 +110,10 @@ Para parar a stack mantendo os dados do banco:
 
 ```bash
 PODMAN_COMPOSE_PROVIDER=podman-compose podman compose down
-```
+````
 
-Para parar a stack e remover também o volume do PostgreSQL:
+docker rm -f encomendas-postgres-local
+docker volume rm postgres-data
 
 ```bash
 PODMAN_COMPOSE_PROVIDER=podman-compose podman compose down -v
