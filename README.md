@@ -7,6 +7,8 @@ Aplicação web para gerenciamento de encomendas em condomínio, desenvolvida pe
 ```text
 .
 ├── database/             # Dockerfile e script de criação/carga do PostgreSQL
+├── encomendas/            # Frontend Angular 22
+│   └── src/app/
 │       ├── core/auth/     # Autenticação, guard e interceptor
 │       └── features/      # Login, dashboard, moradores e encomendas
 ├── encomendas-api/        # API NestJS 12
@@ -19,139 +21,100 @@ Aplicação web para gerenciamento de encomendas em condomínio, desenvolvida pe
 └── docker-compose.yml     # Orquestra frontend, API e PostgreSQL
 ```
 
-O diretório `front/encomendas` contém uma cópia do frontend. A execução documentada neste arquivo usa a versão em `encomendas/`, que é a referenciada pelo `docker-compose.yml`.
+O diretório `front/encomendas` contém uma cópia do frontend. A execução documentada neste arquivo usa a versão em `encomendas/`, referenciada pelo `docker-compose.yml`.
 
 ## Pré-requisitos
 
-Docker e Docker Compose estão instalados e que o daemon está em execução:
-Para executar a stack completa, instale:
+Para executar a stack completa, instale o Docker Engine e o Docker Compose. O daemon do Docker deve estar em execução.
 
-docker --version
-
-- Node.js 22 ou superior e npm, caso execute os projetos fora dos containers.
+Caso execute os projetos fora dos containers, instale também Node.js 22 ou superior e npm.
 
 Todos os comandos abaixo partem da raiz do repositório.
-docker compose version
 
 ## Primeira execução após clonar
 
-Este é o caminho mais direto para começar usando os containers:
-
-docker compose up -d --build
-
 1. Clone o repositório e entre na pasta do projeto:
 
-Na primeira execução, a construção pode levar alguns minutos e o PostgreSQL precisa concluir o healthcheck antes de a API iniciar. Se algum serviço não subir, consulte os logs com `docker compose logs -f`. As portas `4200`, `3001` e `5432` precisam estar livres.
+    ```bash
+    git clone <URL_DO_REPOSITORIO>
+    cd PP_ADS_G8
+    ```
 
-```bash
-git clone <URL_DO_REPOSITORIO>
+2. Confirme que Docker e Docker Compose estão instalados:
+
+    ```bash
+    docker --version
+    docker compose version
+    ```
+
+3. Construa as imagens e suba o frontend, a API e o PostgreSQL:
+
+    ```bash
+    docker compose up -d --build
+    ```
+
+4. Confira os serviços:
+
+    ```bash
+    docker compose ps
+    ```
+
+5. Abra http://localhost:4200. Use `john` e `changeme` para o primeiro login.
+
+6. Confirme que a API responde:
+
+    ```bash
+    curl http://localhost:3001/
+    ```
+
+Na primeira execução, a construção pode levar alguns minutos e o PostgreSQL precisa concluir o healthcheck antes de a API iniciar. Se algum serviço não subir, consulte `docker compose logs -f`. As portas `4200`, `3001` e `5432` precisam estar livres.
+
 ## Executar com Docker
-```
-
-docker compose up -d --build 2. Confirme que Podman e `podman-compose` estão instalados:
-
-```bash
-docker ps
-podman --version
-podman-compose --version
-```
-
-docker compose logs -f
-
-3. Na raiz do projeto, construa as imagens e suba o frontend, a API e o PostgreSQL:
-
-docker compose logs -f encomendas-api
-
-- Docker Engine e Docker Compose.
-
-```bash
-docker compose down
-PODMAN_COMPOSE_PROVIDER=podman-compose podman compose up -d --build
-2. Confirme que Docker e Docker Compose estão instalados e que o daemon está em execução:
-```
-
-docker compose down -v
-
-docker --version
-docker compose version
-docker build -t localhost/encomendas-postgres:local ./database
-
-````bash
-podman compose ps
-docker volume create postgres-data
-docker compose up -d --build
-
-5. Abra http://localhost:4200 no navegador. Entre com `john` e `changeme` ou use a documentação interativa em http://localhost:3001/api.
-docker run -d \
-docker compose ps
-6. Para confirmar rapidamente que a API está respondendo:
-
-docker rm -f encomendas-postgres-local
-```bash
-curl http://localhost:3001/
-````
-
-docker volume rm postgres-data
-
-Na primeira execução, a construção pode levar alguns minutos e o PostgreSQL precisa concluir o healthcheck antes de a API iniciar. Se algum serviço não subir, consulte os logs com `PODMAN_COMPOSE_PROVIDER=podman-compose podman compose logs -f`. As portas `4200`, `3001` e `5432` precisam estar livres.
-
-## Executar com Podman
 
 O Compose cria os seguintes serviços:
 
-| Serviço | Container | Endereço local |
-| ------- | --------- | -------------- |
+| Serviço          | Container             | Endereço local        |
+| ---------------- | --------------------- | --------------------- |
+| Frontend Angular | `encomendas`          | http://localhost:4200 |
+| API NestJS       | `encomendas-api`      | http://localhost:3001 |
+| PostgreSQL 16    | `encomendas-postgres` | `localhost:5432`      |
 
-docker compose up -d --build
-| API NestJS | `encomendas-api` | http://localhost:3001 |
-| PostgreSQL 16 | `encomendas-postgres` | `localhost:5432` |
-docker ps
-docker compose logs -f
-docker compose logs -f encomendas-api
+O banco executa `database/init.sql` automaticamente na primeira inicialização do volume. O script cria as tabelas e insere dados de exemplo.
 
-````bash
-PODMAN_COMPOSE_PROVIDER=podman-compose podman compose up -d --build
-docker compose down
-
-O banco executa `database/init.sql` automaticamente na primeira inicialização do volume. O script cria as tabelas de usuários, moradores e encomendas e insere dados de exemplo.
-docker compose down -v
 Verifique os containers e acompanhe os logs:
 
 ```bash
-podman ps
-docker build -t localhost/encomendas-postgres:local ./database
-docker volume create postgres-data
-docker run -d \
+docker ps
+docker compose logs -f
+docker compose logs -f encomendas-api
+```
 
-Acesse o frontend em http://localhost:4200 e o Swagger da API em http://localhost:3001/api.
+Acesse o Swagger da API em http://localhost:3001/api.
 
 Para parar a stack mantendo os dados do banco:
 
 ```bash
-PODMAN_COMPOSE_PROVIDER=podman-compose podman compose down
-````
+docker compose down
+```
 
-docker rm -f encomendas-postgres-local
-docker volume rm postgres-data
+Para parar a stack e remover também o volume do PostgreSQL:
 
 ```bash
-PODMAN_COMPOSE_PROVIDER=podman-compose podman compose down -v
+docker compose down -v
 ```
 
 ## Configuração do banco
 
-Os valores usados pelo Compose são:
-
 ```text
-Banco:       encomendas_db
-Usuário:     encomendas
-Senha:       encomendas
-Host local:  localhost
+Banco:        encomendas_db
+Usuário:      encomendas
+Senha:        encomendas
+Host local:   localhost
 Host Compose: postgres
-Porta:       5432
+Porta:        5432
 ```
 
-Ao executar a API diretamente no host, ela usa `localhost:5432` por padrão. As variáveis aceitas pela API são `DATABASE_URL` ou, separadamente, `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER` e `DB_PASSWORD`. Também é possível configurar `DB_POOL_MAX`, `DB_IDLE_TIMEOUT_MS`, `DB_CONNECTION_TIMEOUT_MS` e `DB_SSL=true`.
+Ao executar a API diretamente no host, ela usa `localhost:5432` por padrão. As variáveis aceitas são `DATABASE_URL` ou, separadamente, `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER` e `DB_PASSWORD`.
 
 ## Executar os projetos individualmente
 
@@ -163,7 +126,7 @@ npm install
 npm start
 ```
 
-O frontend estará disponível em http://localhost:4200 e consumirá a API em http://localhost:3001. Para gerar o build de produção:
+O frontend estará disponível em http://localhost:4200. Para gerar o build de produção:
 
 ```bash
 npm run build
@@ -180,7 +143,7 @@ Rotas principais da aplicação:
 
 ### API
 
-Com o PostgreSQL em execução, instale as dependências e inicie a API:
+Com o PostgreSQL em execução:
 
 ```bash
 cd encomendas-api
@@ -188,7 +151,7 @@ npm install
 npm run start:dev
 ```
 
-A API escuta a porta `3001` por padrão no código; use `PORT` para alterá-la:
+A API escuta a porta `3001` por padrão. Use `PORT` para alterá-la:
 
 ```bash
 PORT=3000 npm run start:dev
@@ -201,7 +164,7 @@ npm run build
 npm run start:prod
 ```
 
-O login público de teste é:
+Login de teste:
 
 ```bash
 curl -X POST http://localhost:3001/auth/login \
@@ -209,16 +172,12 @@ curl -X POST http://localhost:3001/auth/login \
   -d '{"username":"john","password":"changeme"}'
 ```
 
-As demais rotas exigem o token JWT retornado em `access_token`.
-
 ### PostgreSQL em container separado
 
-Para executar somente o banco sem a stack completa:
-
 ```bash
-podman build -t localhost/encomendas-postgres:local ./database
-podman volume create postgres-data
-podman run -d \
+docker build -t localhost/encomendas-postgres:local ./database
+docker volume create postgres-data
+docker run -d \
   --name encomendas-postgres-local \
   -e POSTGRES_DB=encomendas_db \
   -e POSTGRES_USER=encomendas \
@@ -231,29 +190,19 @@ podman run -d \
 O arquivo `init.sql` só é executado quando o volume está vazio. Para recriar os dados iniciais:
 
 ```bash
-podman rm -f encomendas-postgres-local
-podman volume rm postgres-data
+docker rm -f encomendas-postgres-local
+docker volume rm postgres-data
 ```
 
 ## Observabilidade
 
-A API usa `@nestjs/observe` para coletar telemetria da aplicação NestJS. A integração está organizada em três pontos:
+A API usa `@nestjs/observe` para coletar telemetria. `observe.module.ts` cria o módulo e o instrumentador, `app.module.ts` importa o módulo e `main.ts` passa `ObserveInstrument` para o bootstrap do NestJS.
 
-- `encomendas-api/src/observe.module.ts` chama `createObserveModule()` e exporta `ObserveInstrument` e `observeModule`.
-- `encomendas-api/src/app.module.ts` importa `observeModule` junto dos módulos de autenticação, usuários, moradores, encomendas e banco.
-- `encomendas-api/src/main.ts` passa `ObserveInstrument` para `NestFactory.create()`, ativando a instrumentação durante o bootstrap da API.
+A instrumentação monitora requisições HTTP, runtime e providers do NestJS, chamadas HTTP de saída e o pool PostgreSQL. Após o login, o identificador `sub` do JWT é usado como `userId`; requisições sem usuário ficam como `anonymous`.
 
-Com essa configuração, a estrutura disponível monitora:
+O banco e chamadas HTTP de saída são rastreados por padrão. Use `OBSERVE_DATABASE=false` para desativar o rastreamento do banco e `OBSERVE_SOURCE_CONTEXT=false` para desativar o contexto de origem.
 
-- requisições e respostas HTTP da API;
-- runtime e providers do NestJS;
-- chamadas HTTP de saída;
-- conexões e consultas realizadas pelo pool `pg` do PostgreSQL;
-- associação da requisição a um usuário: depois do login, o identificador JWT `sub` é usado como `userId`; requisições sem usuário ficam como `anonymous`.
-
-O rastreamento do banco e de chamadas HTTP de saída é habilitado por padrão. A instrumentação do banco pode ser desativada com `OBSERVE_DATABASE=false`. O contexto de origem pode ser desativado com `OBSERVE_SOURCE_CONTEXT=false`.
-
-Para uma execução local, crie `encomendas-api/.env` e informe as credenciais e a identificação do serviço:
+Para execução local, configure `encomendas-api/.env`:
 
 ```bash
 OBSERVE_APP_KEY=your-app-key
@@ -265,9 +214,7 @@ OBSERVE_DATABASE=true
 OBSERVE_DEBUG=false
 ```
 
-`OBSERVE_DEBUG=true` habilita logs de diagnóstico do SDK. Não committe esse arquivo nem exponha `OBSERVE_APP_KEY` e `OBSERVE_APP_SECRET`.
-
-Ao executar via `docker-compose.yml`, as variáveis de observabilidade precisam ser repassadas ao serviço `encomendas-api` no Compose para que os containers usem uma conta Observe. Sem essas variáveis, a aplicação mantém os valores padrão definidos em `observe.module.ts`; isso não substitui a configuração de credenciais necessária para enviar dados a uma conta Observe.
+`OBSERVE_DEBUG=true` habilita logs de diagnóstico. Nunca versione ou exponha `OBSERVE_APP_KEY` e `OBSERVE_APP_SECRET`. No Render, configure essas variáveis como secrets do serviço da API.
 
 ## Testes e qualidade
 
