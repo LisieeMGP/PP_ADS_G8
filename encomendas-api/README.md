@@ -34,7 +34,7 @@ $ npm install
 ### Observe monitoring
 
 The API uses `@nestjs/observe` to collect HTTP, runtime, provider, outbound HTTP,
-and MySQL telemetry. Configure the Observe credentials through environment
+and PostgreSQL telemetry. Configure the Observe credentials through environment
 variables before starting the API:
 
 ```bash
@@ -48,7 +48,7 @@ OBSERVE_DEBUG=false
 ```
 
 `OBSERVE_DATABASE` defaults to `true` and enables instrumentation of the
-`mysql2/promise` pool. Set it to `false` only when database instrumentation is
+`pg` pool. Set it to `false` only when database instrumentation is
 not desired. For local development, create a `.env` file in this API directory
 with these variables. The file is ignored by Git and loaded automatically.
 Credentials are intentionally not stored in the repository.

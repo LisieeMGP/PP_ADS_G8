@@ -1,87 +1,135 @@
 # Projeto de Prática Profissional em ADS
 
-Aplicação de gerenciamento de encomendas do Grupo 8. O repositório contém:
+Aplicação web para gerenciamento de encomendas em condomínio, desenvolvida pelo Grupo 8. O projeto é composto por um frontend Angular, uma API REST em NestJS e um banco PostgreSQL.
 
-- `encomendas`: frontend em Angular.
-- `encomendas-api`: API REST em NestJS.
-- MySQL: banco de dados usado pelo ambiente de desenvolvimento.
+## Estrutura do projeto
+
+```text
+.
+├── database/             # Dockerfile e script de criação/carga do PostgreSQL
+├── encomendas/            # Frontend Angular 22
+│   └── src/app/
+│       ├── core/auth/     # Autenticação, guard e interceptor
+│       └── features/      # Login, dashboard, moradores e encomendas
+├── encomendas-api/        # API NestJS 12
+│   └── src/
+│       ├── auth/          # Login JWT e proteção de rotas
+│       ├── deliveries/    # Registro, consulta e retirada de encomendas
+│       ├── residents/     # Cadastro e consulta de moradores
+│       ├── users/         # Usuários da aplicação
+│       └── database/      # Pool de conexão PostgreSQL
+└── docker-compose.yml     # Orquestra frontend, API e PostgreSQL
+```
+
+O diretório `front/encomendas` contém uma cópia do frontend. A execução documentada neste arquivo usa a versão em `encomendas/`, que é a referenciada pelo `docker-compose.yml`.
 
 ## Pré-requisitos
 
-Para executar com containers, instale:
+Para executar a stack completa, instale:
 
-- Podman.
-- `podman-compose`.
+- Podman e `podman-compose`.
+- Node.js 22 ou superior e npm, caso execute os projetos fora dos containers.
 
-O comando `podman compose` pode selecionar o `docker-compose` do sistema. Neste projeto, force o provedor Podman com a variável `PODMAN_COMPOSE_PROVIDER=podman-compose`.
+Todos os comandos abaixo partem da raiz do repositório.
 
-Para executar as aplicações diretamente no Linux, instale também:
+## Primeira execução após clonar
 
-- Node.js 22 ou superior.
-- npm.
-- MySQL 8.4 ou superior, caso o banco também seja executado fora do container.
+Este é o caminho mais direto para começar usando os containers:
 
-Todos os comandos desta documentação devem ser executados na raiz do repositório, na pasta que contém este arquivo e o `docker-compose.yml`.
+1. Clone o repositório e entre na pasta do projeto:
 
-## Executar as três aplicações com Podman
+```bash
+git clone <URL_DO_REPOSITORIO>
+cd PP_ADS_G8
+```
 
-O Compose cria três containers:
+2. Confirme que Podman e `podman-compose` estão instalados:
 
-| Serviço          | Container          | Endereço local        |
-| ---------------- | ------------------ | --------------------- |
-| Frontend Angular | `encomendas`       | http://localhost:4200 |
-| API NestJS       | `encomendas-api`   | http://localhost:3001 |
-| MySQL            | `encomendas-mysql` | localhost:3306        |
+```bash
+podman --version
+podman-compose --version
+```
 
-Suba os containers e construa as imagens:
+3. Na raiz do projeto, construa as imagens e suba o frontend, a API e o PostgreSQL:
 
 ```bash
 PODMAN_COMPOSE_PROVIDER=podman-compose podman compose up -d --build
 ```
 
-O MySQL executa automaticamente o arquivo `database/init.sql`, incorporado em `database/Dockerfile`, na primeira inicialização do volume. Esse arquivo cria as tabelas e insere os dados de exemplo.
+4. Confira se os três serviços estão em execução:
 
-Confira o estado dos serviços:
+```bash
+podman compose ps
+```
+
+5. Abra http://localhost:4200 no navegador. Entre com `john` e `changeme` ou use a documentação interativa em http://localhost:3001/api.
+
+6. Para confirmar rapidamente que a API está respondendo:
+
+```bash
+curl http://localhost:3001/
+```
+
+Na primeira execução, a construção pode levar alguns minutos e o PostgreSQL precisa concluir o healthcheck antes de a API iniciar. Se algum serviço não subir, consulte os logs com `PODMAN_COMPOSE_PROVIDER=podman-compose podman compose logs -f`. As portas `4200`, `3001` e `5432` precisam estar livres.
+
+## Executar com Podman
+
+O Compose cria os seguintes serviços:
+
+| Serviço          | Container             | Endereço local        |
+| ---------------- | --------------------- | --------------------- |
+| Frontend Angular | `encomendas`          | http://localhost:4200 |
+| API NestJS       | `encomendas-api`      | http://localhost:3001 |
+| PostgreSQL 16    | `encomendas-postgres` | `localhost:5432`      |
+
+Construa as imagens e suba os serviços:
+
+```bash
+PODMAN_COMPOSE_PROVIDER=podman-compose podman compose up -d --build
+```
+
+O banco executa `database/init.sql` automaticamente na primeira inicialização do volume. O script cria as tabelas de usuários, moradores e encomendas e insere dados de exemplo.
+
+Verifique os containers e acompanhe os logs:
 
 ```bash
 podman ps
-```
-
-Veja os logs de todos os serviços ou de um serviço específico:
-
-```bash
 PODMAN_COMPOSE_PROVIDER=podman-compose podman compose logs -f
 PODMAN_COMPOSE_PROVIDER=podman-compose podman compose logs -f encomendas-api
 ```
 
-Abra o frontend em http://localhost:4200. A documentação Swagger da API está disponível em http://localhost:3001/api.
+Acesse o frontend em http://localhost:4200 e o Swagger da API em http://localhost:3001/api.
 
-Para parar os containers sem remover o volume do banco:
+Para parar a stack mantendo os dados do banco:
 
 ```bash
 PODMAN_COMPOSE_PROVIDER=podman-compose podman compose down
 ```
 
-Para parar os containers e apagar também os dados persistidos do MySQL:
+Para parar a stack e remover também o volume do PostgreSQL:
 
 ```bash
 PODMAN_COMPOSE_PROVIDER=podman-compose podman compose down -v
 ```
 
-As credenciais padrão do banco são:
+## Configuração do banco
+
+Os valores usados pelo Compose são:
 
 ```text
-Database: encomendas_db
-Usuário:  encomendas
-Senha:    encomendas
-Root:     root
-Host:     mysql (dentro da rede Compose) ou localhost (na máquina)
-Porta:    3306
+Banco:       encomendas_db
+Usuário:     encomendas
+Senha:       encomendas
+Host local:  localhost
+Host Compose: postgres
+Porta:       5432
 ```
 
-## Executar o frontend individualmente
+Ao executar a API diretamente no host, ela usa `localhost:5432` por padrão. As variáveis aceitas pela API são `DATABASE_URL` ou, separadamente, `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER` e `DB_PASSWORD`. Também é possível configurar `DB_POOL_MAX`, `DB_IDLE_TIMEOUT_MS`, `DB_CONNECTION_TIMEOUT_MS` e `DB_SSL=true`.
 
-Instale as dependências e inicie o servidor Angular em modo de desenvolvimento:
+## Executar os projetos individualmente
+
+### Frontend
 
 ```bash
 cd encomendas
@@ -89,17 +137,24 @@ npm install
 npm start
 ```
 
-Acesse http://localhost:4200. O servidor recarrega automaticamente quando os arquivos do frontend são alterados.
-
-Para gerar apenas o build de produção:
+O frontend estará disponível em http://localhost:4200 e consumirá a API em http://localhost:3001. Para gerar o build de produção:
 
 ```bash
 npm run build
 ```
 
-## Executar a API individualmente
+Rotas principais da aplicação:
 
-Instale as dependências e inicie a API NestJS em modo de desenvolvimento:
+- `/login`: autenticação.
+- `/inicio`: visão geral.
+- `/moradores`: cadastro de moradores.
+- `/encomendas/registrar`: registro de encomendas.
+- `/encomendas/consultar`: consulta de encomendas.
+- `/encomendas/retirada`: registro de retirada.
+
+### API
+
+Com o PostgreSQL em execução, instale as dependências e inicie a API:
 
 ```bash
 cd encomendas-api
@@ -107,102 +162,88 @@ npm install
 npm run start:dev
 ```
 
-A API será iniciada na porta `3000` por padrão. Acesse a documentação Swagger em http://localhost:3000/api.
+A API escuta a porta `3001` por padrão no código; use `PORT` para alterá-la:
 
-Para iniciar em modo de produção local:
+```bash
+PORT=3000 npm run start:dev
+```
+
+Para produção local:
 
 ```bash
 npm run build
 npm run start:prod
 ```
 
-Para usar outra porta:
+O login público de teste é:
 
 ```bash
-PORT=3001 npm run start:dev
+curl -X POST http://localhost:3001/auth/login \
+  -H 'Content-Type: application/json' \
+  -d '{"username":"john","password":"changeme"}'
 ```
 
-O login público de teste usa um dos usuários definidos atualmente pela API:
+As demais rotas exigem o token JWT retornado em `access_token`.
+
+### PostgreSQL em container separado
+
+Para executar somente o banco sem a stack completa:
 
 ```bash
-curl -X POST http://localhost:3000/auth/login \
-	-H 'Content-Type: application/json' \
-	-d '{"username":"john","password":"changeme"}'
-```
-
-## Executar o MySQL individualmente
-
-### Usando MySQL instalado no Linux
-
-Inicie o serviço do MySQL:
-
-```bash
-sudo systemctl start mysql
-```
-
-Crie o banco e o usuário de testes:
-
-```bash
-sudo mysql <<'SQL'
-CREATE DATABASE IF NOT EXISTS encomendas_db;
-CREATE USER IF NOT EXISTS 'encomendas'@'localhost' IDENTIFIED BY 'encomendas';
-GRANT ALL PRIVILEGES ON encomendas_db.* TO 'encomendas'@'localhost';
-FLUSH PRIVILEGES;
-SQL
-```
-
-Carregue o schema e os dados iniciais:
-
-```bash
-mysql -u encomendas -pencomendas encomendas_db < database/init.sql
-```
-
-### Usando somente o container do MySQL
-
-Caso não queira instalar o MySQL no sistema, construa e execute a imagem definida em `database/Dockerfile`:
-
-```bash
-podman build -t localhost/encomendas-mysql:local ./database
-podman volume create encomendas-mysql-data
+podman build -t localhost/encomendas-postgres:local ./database
+podman volume create postgres-data
 podman run -d \
-	--name encomendas-mysql-local \
-	-e MYSQL_DATABASE=encomendas_db \
-	-e MYSQL_USER=encomendas \
-	-e MYSQL_PASSWORD=encomendas \
-	-e MYSQL_ROOT_PASSWORD=root \
-	-p 3307:3306 \
-	-v encomendas-mysql-data:/var/lib/mysql \
-	localhost/encomendas-mysql:local
+  --name encomendas-postgres-local \
+  -e POSTGRES_DB=encomendas_db \
+  -e POSTGRES_USER=encomendas \
+  -e POSTGRES_PASSWORD=encomendas \
+  -p 5432:5432 \
+  -v postgres-data:/var/lib/postgresql/data \
+  localhost/encomendas-postgres:local
 ```
 
-Nesse exemplo, o MySQL fica disponível na porta `3307` da máquina e na porta `3306` dentro do container. A porta `3307` evita conflito caso a stack Compose ou uma instalação local do MySQL esteja usando a porta padrão. Para usar a porta padrão, troque `-p 3307:3306` por `-p 3306:3306`.
-
-O arquivo `init.sql` é executado somente quando o volume `encomendas-mysql-data` ainda está vazio. Para recriar o banco e executar a carga inicial novamente:
+O arquivo `init.sql` só é executado quando o volume está vazio. Para recriar os dados iniciais:
 
 ```bash
-podman rm -f encomendas-mysql-local
-podman volume rm encomendas-mysql-data
-podman volume create encomendas-mysql-data
+podman rm -f encomendas-postgres-local
+podman volume rm postgres-data
 ```
 
-Depois, execute novamente o comando `podman run` acima.
+## Observabilidade
 
-Verifique o banco:
+A API usa `@nestjs/observe` para coletar telemetria da aplicação NestJS. A integração está organizada em três pontos:
+
+- `encomendas-api/src/observe.module.ts` chama `createObserveModule()` e exporta `ObserveInstrument` e `observeModule`.
+- `encomendas-api/src/app.module.ts` importa `observeModule` junto dos módulos de autenticação, usuários, moradores, encomendas e banco.
+- `encomendas-api/src/main.ts` passa `ObserveInstrument` para `NestFactory.create()`, ativando a instrumentação durante o bootstrap da API.
+
+Com essa configuração, a estrutura disponível monitora:
+
+- requisições e respostas HTTP da API;
+- runtime e providers do NestJS;
+- chamadas HTTP de saída;
+- conexões e consultas realizadas pelo pool `pg` do PostgreSQL;
+- associação da requisição a um usuário: depois do login, o identificador JWT `sub` é usado como `userId`; requisições sem usuário ficam como `anonymous`.
+
+O rastreamento do banco e de chamadas HTTP de saída é habilitado por padrão. A instrumentação do banco pode ser desativada com `OBSERVE_DATABASE=false`. O contexto de origem pode ser desativado com `OBSERVE_SOURCE_CONTEXT=false`.
+
+Para uma execução local, crie `encomendas-api/.env` e informe as credenciais e a identificação do serviço:
 
 ```bash
-podman exec encomendas-mysql-local \
-	mysql -uencomendas -pencomendas -D encomendas_db \
-	-e 'SELECT COUNT(*) AS total FROM encomendas;'
+OBSERVE_APP_KEY=your-app-key
+OBSERVE_APP_SECRET=your-app-secret
+OBSERVE_SERVICE_ID=encomendas-api
+OBSERVE_SERVICE_VERSION=1.0.0
+OBSERVE_ENDPOINT=https://observe-api.nestjs.com
+OBSERVE_DATABASE=true
+OBSERVE_DEBUG=false
 ```
 
-Para remover esse container de teste:
+`OBSERVE_DEBUG=true` habilita logs de diagnóstico do SDK. Não committe esse arquivo nem exponha `OBSERVE_APP_KEY` e `OBSERVE_APP_SECRET`.
 
-```bash
-podman rm -f encomendas-mysql-local
-podman volume rm encomendas-mysql-data
-```
+Ao executar via `docker-compose.yml`, as variáveis de observabilidade precisam ser repassadas ao serviço `encomendas-api` no Compose para que os containers usem uma conta Observe. Sem essas variáveis, a aplicação mantém os valores padrão definidos em `observe.module.ts`; isso não substitui a configuração de credenciais necessária para enviar dados a uma conta Observe.
 
-## Testes
+## Testes e qualidade
 
 Na API:
 
@@ -210,6 +251,8 @@ Na API:
 cd encomendas-api
 npm test
 npm run test:e2e
+npm run test:cov
+npm run lint
 ```
 
 No frontend:

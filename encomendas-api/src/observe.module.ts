@@ -2,13 +2,8 @@ import 'dotenv/config';
 import { createObserveModule } from '@nestjs/observe';
 
 const { ObserveModule, ObserveInstrument } = createObserveModule({
-  skipInstrumentation: (instance) => {
-    if (!instance || typeof instance !== 'object') return false;
-
-    const constructorName = (instance as { constructor?: { name?: string } })
-      .constructor?.name;
-    return constructorName === 'PromisePool';
-  },
+  sourceContext:
+    process.env.OBSERVE_SOURCE_CONTEXT === 'false' ? false : undefined,
 });
 
 export { ObserveInstrument };

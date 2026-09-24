@@ -7,15 +7,15 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3000
-      DB_HOST: mysql
-      DB_PORT: 3306
+      DB_HOST: postgres
+      DB_PORT: 5432
       DB_NAME: encomendas_db
       DB_USER: encomendas
       DB_PASSWORD: encomendas
     ports:
       - "3001:3000"
     depends_on:
-      mysql:
+      postgres:
         condition: service_healthy
     networks:
       - encomendas-network
@@ -32,23 +32,22 @@ services:
     networks:
       - encomendas-network
 
-  mysql:
-    image: localhost/encomendas-mysql:local
+  postgres:
+    image: localhost/encomendas-postgres:local
     build:
       context: ./database
-    container_name: encomendas-mysql
+    container_name: encomendas-postgres
     restart: unless-stopped
     environment:
-      MYSQL_DATABASE: encomendas_db
-      MYSQL_USER: encomendas
-      MYSQL_PASSWORD: encomendas
-      MYSQL_ROOT_PASSWORD: root
+      POSTGRES_DB: encomendas_db
+      POSTGRES_USER: encomendas
+      POSTGRES_PASSWORD: encomendas
     ports:
-      - "3306:3306"
+      - "5432:5432"
     volumes:
-      - mysql-data:/var/lib/mysql
+      - postgres-data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$$MYSQL_ROOT_PASSWORD"]
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 5s
       timeout: 5s
       retries: 20
@@ -56,7 +55,7 @@ services:
       - encomendas-network
 
 volumes:
-  mysql-data:
+  postgres-data:
 
 networks:
   encomendas-network:

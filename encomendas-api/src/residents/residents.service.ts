@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import type { Pool, ResultSetHeader, RowDataPacket } from 'mysql2/promise';
+import type { Pool } from 'pg';
 import { DATABASE_POOL } from '../database/database.constants.js';
 
-export interface Resident extends RowDataPacket {
+export interface Resident {
   id: number;
   name: string;
   block: string | null;
@@ -14,21 +14,22 @@ export class ResidentsService {
   constructor(@Inject(DATABASE_POOL) private readonly database: Pool) {}
 
   async findAll(): Promise<Resident[]> {
-    const [rows] = await this.database.query<Resident[]>(
+    const result = await this.database.query<Resident>(
       'SELECT id, nome AS name, bloco AS block, unidade AS unit FROM moradores ORDER BY nome, unidade',
     );
-    return rows;
+    return result.rows;
   }
 
-  async create(name: string, block: string | undefined, unit: string): Promise<Resident> {
-    const [result] = await this.database.execute<ResultSetHeader>(
-      'INSERT INTO moradores (nome, bloco, unidade) VALUES (?, ?, ?)',
+  async create(
+    name: string,
+    block: string | undefined,
+    unit: string,
+  ): Promise<Resident> {
+    const result = await this.database.query<Resident>(
+      `INSERT INTO moradores (nome, bloco, unidade) VALUES ($1, $2, $3)
+       RETURNING id, nome AS name, bloco AS block, unidade AS unit`,
       [name.trim(), block?.trim() || null, unit.trim()],
     );
-    const [rows] = await this.database.query<Resident[]>(
-      'SELECT id, nome AS name, bloco AS block, unidade AS unit FROM moradores WHERE id = ?',
-      [result.insertId],
-    );
-    return rows[0];
+    return result.rows[0];
   }
 }
