@@ -7,8 +7,6 @@ Aplicação web para gerenciamento de encomendas em condomínio, desenvolvida pe
 ```text
 .
 ├── database/             # Dockerfile e script de criação/carga do PostgreSQL
-├── encomendas/            # Frontend Angular 22
-│   └── src/app/
 │       ├── core/auth/     # Autenticação, guard e interceptor
 │       └── features/      # Login, dashboard, moradores e encomendas
 ├── encomendas-api/        # API NestJS 12
@@ -25,54 +23,75 @@ O diretório `front/encomendas` contém uma cópia do frontend. A execução doc
 
 ## Pré-requisitos
 
+Docker e Docker Compose estão instalados e que o daemon está em execução:
 Para executar a stack completa, instale:
 
-- Podman e `podman-compose`.
+docker --version
+
 - Node.js 22 ou superior e npm, caso execute os projetos fora dos containers.
 
 Todos os comandos abaixo partem da raiz do repositório.
+docker compose version
 
 ## Primeira execução após clonar
 
 Este é o caminho mais direto para começar usando os containers:
 
+docker compose up -d --build
+
 1. Clone o repositório e entre na pasta do projeto:
+
+Na primeira execução, a construção pode levar alguns minutos e o PostgreSQL precisa concluir o healthcheck antes de a API iniciar. Se algum serviço não subir, consulte os logs com `docker compose logs -f`. As portas `4200`, `3001` e `5432` precisam estar livres.
 
 ```bash
 git clone <URL_DO_REPOSITORIO>
-cd PP_ADS_G8
+## Executar com Docker
 ```
 
-2. Confirme que Podman e `podman-compose` estão instalados:
+docker compose up -d --build 2. Confirme que Podman e `podman-compose` estão instalados:
 
 ```bash
+docker ps
 podman --version
 podman-compose --version
 ```
 
+docker compose logs -f
+
 3. Na raiz do projeto, construa as imagens e suba o frontend, a API e o PostgreSQL:
+
+docker compose logs -f encomendas-api
 
 - Docker Engine e Docker Compose.
 
 ```bash
+docker compose down
 PODMAN_COMPOSE_PROVIDER=podman-compose podman compose up -d --build
 2. Confirme que Docker e Docker Compose estão instalados e que o daemon está em execução:
 ```
 
+docker compose down -v
+
 docker --version
 docker compose version
+docker build -t localhost/encomendas-postgres:local ./database
 
 ````bash
 podman compose ps
+docker volume create postgres-data
 docker compose up -d --build
 
 5. Abra http://localhost:4200 no navegador. Entre com `john` e `changeme` ou use a documentação interativa em http://localhost:3001/api.
+docker run -d \
 docker compose ps
 6. Para confirmar rapidamente que a API está respondendo:
 
+docker rm -f encomendas-postgres-local
 ```bash
 curl http://localhost:3001/
 ````
+
+docker volume rm postgres-data
 
 Na primeira execução, a construção pode levar alguns minutos e o PostgreSQL precisa concluir o healthcheck antes de a API iniciar. Se algum serviço não subir, consulte os logs com `PODMAN_COMPOSE_PROVIDER=podman-compose podman compose logs -f`. As portas `4200`, `3001` e `5432` precisam estar livres.
 
