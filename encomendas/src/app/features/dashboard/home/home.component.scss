@@ -1,0 +1,13 @@
+:host {
+  display: block;
+}
+
+.stat-grid,
+.dashboard-grid {
+  gap: 2rem;
+}
+
+.stat-grid > p-card,
+.dashboard-grid > p-card {
+  margin: 0.25rem;
+}

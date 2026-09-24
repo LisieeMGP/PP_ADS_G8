@@ -1,0 +1,57 @@
+<section class="page-heading">
+  <div>
+    <p class="eyebrow">CADASTROS</p>
+    <h1>Moradores</h1>
+    <p class="muted">Mantenha os destinatários da portaria sempre atualizados.</p>
+  </div>
+</section>
+<p-card class="panel form-panel"
+  ><ng-template #header
+    ><div class="panel-heading">
+      <div>
+        <!-- <p class="eyebrow">NOVO CADASTRO</p> -->
+        <h2>Cadastrar morador</h2>
+      </div>
+    </div></ng-template
+  >
+  <form (ngSubmit)="submit()">
+    <div class="resident-field">
+      <label for="resident-name">Nome completo</label>
+      <input
+        pInputText
+        id="resident-name"
+        name="residentName"
+        [(ngModel)]="name"
+        placeholder="Ex.: Ana Santos"
+        required
+      />
+    </div>
+    <div class="two-fields">
+      <div class="resident-field">
+        <label for="resident-block">Bloco</label>
+        <input
+          pInputText
+          id="resident-block"
+          name="residentBlock"
+          [(ngModel)]="block"
+          placeholder="Ex.: A"
+        />
+      </div>
+      <div class="resident-field">
+        <label for="resident-unit">Unidade</label>
+        <input
+          pInputText
+          id="resident-unit"
+          name="residentUnit"
+          [(ngModel)]="unit"
+          placeholder="Ex.: 101"
+          required
+        />
+      </div>
+    </div>
+    <button pButton type="submit">
+      <i class="pi pi-check" aria-hidden="true"></i>
+      <span>Salvar morador</span>
+    </button>
+  </form></p-card
+>

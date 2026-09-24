@@ -1,0 +1,33 @@
+<section class="page-heading">
+  <div>
+    <p class="eyebrow">PORTARIA / ENTREGA</p>
+    <h1>Registrar retirada</h1>
+    <p class="muted">Selecione uma encomenda que aguarda retirada e confirme a entrega.</p>
+  </div>
+</section>
+<p-card class="panel form-panel"
+  ><ng-template #content
+    ><div class="pickup-field">
+      <label for="pickup-delivery">Encomenda</label>
+      <p-select
+        inputId="pickup-delivery"
+        name="pickupDelivery"
+        [(ngModel)]="selectedId"
+        [options]="deliveries"
+        optionLabel="description"
+        optionValue="id"
+        placeholder="Selecione uma encomenda"
+        class="full-field"
+      ></p-select>
+    </div>
+    @if (message) {
+      <p class="muted">{{ message }}</p>
+    }
+    <div class="pickup-actions">
+      <button pButton type="button" [disabled]="!selectedId" (click)="confirm()">
+        <i class="pi pi-check" aria-hidden="true"></i>
+        <span>Confirmar retirada</span>
+      </button>
+    </div></ng-template
+  ></p-card
+>

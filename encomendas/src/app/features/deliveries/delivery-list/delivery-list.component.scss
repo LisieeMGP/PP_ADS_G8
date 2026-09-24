@@ -1,0 +1,55 @@
+:host {
+  display: block;
+}
+
+.filter-bar {
+  display: grid;
+  grid-template-columns: minmax(0, 50%) auto;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.filter-bar .check-filter {
+  justify-self: end;
+  align-items: center;
+  line-height: 1;
+}
+
+.filter-bar .check-filter p-checkbox {
+  display: inline-flex;
+  align-items: center;
+}
+
+@media (max-width: 900px) {
+  .filter-bar {
+    grid-template-columns: 1fr;
+  }
+
+  .filter-bar .check-filter {
+    justify-self: start;
+  }
+}
+
+.tracking-code {
+  display: block;
+  color: #243b37;
+  font-weight: 700;
+}
+
+.delivery-name {
+  display: block;
+  color: #8e9a94;
+  font-size: 0.78rem;
+  margin-top: 0.3rem;
+}
+
+.resident-name,
+.resident-address {
+  display: block;
+}
+
+.resident-address {
+  color: #8e9a94;
+  font-size: 0.78rem;
+  margin-top: 0.3rem;
+}

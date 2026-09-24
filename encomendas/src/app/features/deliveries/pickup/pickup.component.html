@@ -1,0 +1,22 @@
+<p-dialog
+  header="Registrar retirada"
+  [(visible)]="visible"
+  [modal]="true"
+  [style]="{ width: 'min(92vw, 430px)' }"
+  (onHide)="closed.emit()"
+  ><div class="pickup-content">
+    <div class="package-icon"><i class="pi pi-box"></i></div>
+    <h3>{{ delivery()?.description }}</h3>
+    <p>Confirme que a encomenda foi entregue ao morador.</p>
+    <dl>
+      <dt>Destinatário</dt>
+      <dd>{{ residentName() }}</dd>
+      <dt>Código de rastreio</dt>
+      <dd>{{ delivery()?.trackingCode }}</dd>
+    </dl>
+    <button pButton type="button" class="confirm-pickup" (click)="confirm()">
+      <i class="pi pi-check" aria-hidden="true"></i>
+      <span>Confirmar retirada</span>
+    </button>
+  </div></p-dialog
+>

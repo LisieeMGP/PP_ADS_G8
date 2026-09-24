@@ -1,0 +1,90 @@
+<section class="page-heading">
+  <div>
+    <p class="eyebrow">{{ currentDate() }}</p>
+    <h1>{{ greeting() }}, {{ userName() }}.</h1>
+    <p class="muted">Aqui está o resumo da operação da sua portaria.</p>
+  </div>
+  <button pButton type="button" routerLink="/encomendas/registrar">
+    <i class="pi pi-plus" aria-hidden="true"></i>
+    <span>Registrar encomenda</span>
+  </button>
+</section>
+
+<section class="stat-grid">
+  <p-card class="stat-card accent">
+    <ng-template #content>
+      <i class="pi pi-clock stat-icon"></i>
+      <p>Aguardando retirada</p>
+      <strong>{{ pendingCount() }}</strong
+      ><small>encomendas pendentes</small></ng-template
+    >
+  </p-card>
+
+  <p-card class="stat-card">
+    <ng-template #content>
+      <i class="pi pi-check-circle stat-icon green"></i>
+      <p>Encomendas registradas</p>
+      <strong>{{ deliveries().length }}</strong>
+      <small>neste período</small></ng-template
+    >
+  </p-card>
+
+  <p-card class="stat-card">
+    <ng-template #content>
+      <i class="pi pi-users stat-icon amber"></i>
+      <p>Moradores cadastrados</p>
+      <strong>{{ residents().length }}</strong>
+      <small>unidades atendidas</small></ng-template
+    >
+  </p-card>
+</section>
+
+<section class="dashboard-grid">
+  <p-card class="panel recent-panel">
+    <ng-template #header>
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">ATENÇÃO</p>
+          <h2>Aguardando retirada</h2>
+        </div>
+        <button pButton type="button" [text]="true" routerLink="/encomendas/consultar">
+          <span>Ver todas</span>
+          <i class="pi pi-arrow-right" aria-hidden="true"></i>
+        </button>
+      </div>
+    </ng-template>
+
+    @for (delivery of pendingDeliveries(); track delivery.id) {
+      <div class="delivery-row">
+        <span class="package-icon"><i class="pi pi-box"></i></span>
+        <div class="delivery-main">
+          <strong>{{ delivery.description }}</strong>
+          <span>{{ residentName(delivery) }} · unidade {{ residentUnit(delivery) }}</span>
+        </div>
+        <p-tag value="Aguardando" severity="warn"></p-tag>
+      </div>
+    } @empty {
+      <p class="empty-state">Nenhuma encomenda aguardando retirada.</p>
+    }
+  </p-card>
+  <p-card class="panel quick-panel">
+    <ng-template #content>
+      <p class="eyebrow">ACESSO RÁPIDO</p>
+      <h2>O que você precisa fazer?</h2>
+      <button
+        pButton
+        type="button"
+        [outlined]="true"
+        class="quick-action"
+        routerLink="/encomendas/registrar"
+      >
+        <i class="pi pi-plus" aria-hidden="true"></i>
+        <span>Registrar recebimento</span>
+      </button>
+      <button pButton type="button" [outlined]="true" class="quick-action" routerLink="/moradores">
+        <i class="pi pi-user-plus" aria-hidden="true"></i>
+        <span>Cadastrar morador</span>
+      </button>
+    </ng-template>
+  </p-card>
+</section>

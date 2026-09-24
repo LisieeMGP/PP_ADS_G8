@@ -1,0 +1,68 @@
+<section class="page-heading">
+  <div>
+    <p class="eyebrow">PORTARIA / NOVO REGISTRO</p>
+    <h1>Registrar encomenda</h1>
+    <p class="muted">Informe os dados para organizar a retirada.</p>
+  </div>
+</section>
+<p-card class="panel wide-form"
+  ><ng-template #header
+    ><div class="form-intro">
+      <!-- <span class="form-number"></span> -->
+      <div>
+        <h2>Dados da encomenda</h2>
+        <p>O destinatário receberá a encomenda na portaria até a retirada.</p>
+      </div>
+    </div></ng-template
+  >
+  <form (ngSubmit)="submit()">
+    <div class="form-field">
+      <label for="delivery-resident">Morador destinatário</label>
+      <p-select
+        inputId="delivery-resident"
+        name="deliveryResident"
+        [(ngModel)]="residentId"
+        [options]="residents()"
+        optionLabel="name"
+        optionValue="id"
+        placeholder="Selecione um morador"
+        class="full-field"
+      ></p-select>
+    </div>
+    <div class="two-fields">
+      <div class="form-field">
+        <label for="delivery-description">Descrição</label
+        ><input
+          pInputText
+          id="delivery-description"
+          name="deliveryDescription"
+          [(ngModel)]="description"
+          placeholder="Ex.: Caixa pequena"
+          required
+        />
+      </div>
+      <div class="form-field">
+        <label for="delivery-code">Código de rastreio</label
+        ><input
+          pInputText
+          id="delivery-code"
+          name="deliveryCode"
+          [(ngModel)]="trackingCode"
+          placeholder="Ex.: BR123456789"
+          required
+        />
+      </div>
+    </div>
+    <div class="form-footer">
+      <div class="form-note">
+        <i class="pi pi-info-circle"></i>
+        <span>A encomenda será criada como <strong>Aguardando retirada</strong>.</span>
+      </div>
+      <div class="form-actions">
+        <button pButton type="submit">
+          <span>Registrar encomenda</span>
+          <i class="pi pi-arrow-right" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div></form
+></p-card>

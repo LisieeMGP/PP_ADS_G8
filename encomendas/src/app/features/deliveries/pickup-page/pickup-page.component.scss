@@ -1,0 +1,14 @@
+:host {
+  display: block;
+}
+
+.pickup-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.pickup-actions {
+  display: flex;
+  margin-top: 1.5rem;
+}

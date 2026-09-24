@@ -1,0 +1,104 @@
+@if (isLoginRoute) {
+  <router-outlet></router-outlet>
+} @else {
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand-lockup">
+        <div class="brand-mark small">+</div>
+        <span>encomendas</span>
+      </div>
+      <div class="side-label">MENU PRINCIPAL</div>
+      <nav>
+        <button
+          pButton
+          type="button"
+          [text]="true"
+          routerLink="/inicio"
+          routerLinkActive="active"
+          class="nav-button"
+        >
+          <i class="pi pi-home" aria-hidden="true"></i>
+          <span>Visão geral</span>
+        </button>
+        <button
+          pButton
+          type="button"
+          [text]="true"
+          routerLink="/encomendas/registrar"
+          routerLinkActive="active"
+          class="nav-button"
+        >
+          <i class="pi pi-plus-circle" aria-hidden="true"></i>
+          <span>Registrar encomenda</span>
+        </button>
+        <button
+          pButton
+          type="button"
+          [text]="true"
+          routerLink="/encomendas/consultar"
+          routerLinkActive="active"
+          class="nav-button"
+        >
+          <i class="pi pi-inbox" aria-hidden="true"></i>
+          <span>Consultar encomendas</span>
+        </button>
+        <button
+          pButton
+          type="button"
+          [text]="true"
+          routerLink="/encomendas/retirada"
+          routerLinkActive="active"
+          class="nav-button"
+        >
+          <i class="pi pi-check-circle" aria-hidden="true"></i>
+          <span>Registrar retirada</span>
+        </button>
+        <button
+          pButton
+          type="button"
+          [text]="true"
+          routerLink="/moradores"
+          routerLinkActive="active"
+          class="nav-button"
+        >
+          <i class="pi pi-users" aria-hidden="true"></i>
+          <span>Moradores</span>
+        </button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="side-label">SESSÃO ATUAL</div>
+        <div class="user-summary">
+          <p-avatar
+            class="avatar"
+            [label]="userInitials()"
+            [ariaLabel]="authenticatedUser()"
+          ></p-avatar>
+          <div>
+            <strong>{{ authenticatedUser() }}</strong
+            ><small>Portaria</small>
+          </div>
+        </div>
+        <button pButton type="button" [text]="true" class="logout-button" (click)="logout()">
+          <i class="pi pi-sign-out" aria-hidden="true"></i>
+          <span>Sair da conta</span>
+        </button>
+      </div>
+    </aside>
+    <main class="workspace">
+      <header class="topbar">
+        <p-breadcrumb class="breadcrumb" [model]="breadcrumbItems"></p-breadcrumb>
+        <div class="topbar-actions">
+          <span class="status-chip"><i></i> Sistema online</span>
+          <p-avatar
+            class="avatar"
+            [label]="userInitials()"
+            [ariaLabel]="authenticatedUser()"
+          ></p-avatar>
+        </div>
+      </header>
+      <div class="page-content">
+        <router-outlet></router-outlet>
+      </div>
+    </main>
+  </div>
+}

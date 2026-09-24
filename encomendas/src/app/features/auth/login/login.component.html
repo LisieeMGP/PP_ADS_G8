@@ -1,0 +1,54 @@
+<main class="login-page">
+  <section class="login-intro">
+    <div class="brand-mark">+</div>
+    <p class="eyebrow">PORTARIA DIGITAL</p>
+    <h1>Encomendas sob controle, moradores bem atendidos.</h1>
+    <p class="intro-copy">
+      Registre recebimentos, encontre pacotes e mantenha cada retirada organizada em um só lugar.
+    </p>
+    <div class="intro-note">
+      <span class="pulse-dot"></span> Operação do condomínio simplificada
+    </div>
+  </section>
+  <p-card class="login-card">
+    <p class="eyebrow">ACESSO DA EQUIPE</p>
+    <h2>Entrar na aplicação</h2>
+    <p class="muted">Use suas credenciais para acessar a rotina da portaria.</p>
+    <form (ngSubmit)="submit()">
+      <label for="login-user">Usuário ou e-mail</label>
+      <input
+        pInputText
+        id="login-user"
+        name="username"
+        [(ngModel)]="username"
+        placeholder="john"
+        required
+      />
+
+      <label for="login-password">Senha</label>
+      <p-password
+        inputId="login-password"
+        name="password"
+        [(ngModel)]="password"
+        [feedback]="false"
+        [toggleMask]="true"
+        placeholder="Sua senha"
+        class="password-field"
+        required
+      ></p-password>
+
+      @if (error) {
+        <p-message severity="error">{{ error }}</p-message>
+      }
+
+      <button pButton type="submit" class="button-wide">
+        <span>Entrar</span>
+        <i class="pi pi-arrow-right" aria-hidden="true"></i>
+      </button>
+    </form>
+
+    <p class="login-hint">
+      Acesso de desenvolvimento: <strong>john@example.com</strong> / <strong>changeme</strong>
+    </p>
+  </p-card>
+</main>

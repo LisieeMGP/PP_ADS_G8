@@ -1,0 +1,19 @@
+:host {
+  display: block;
+}
+
+.resident-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.resident-field label {
+  margin: 0;
+}
+
+.form-panel form > button {
+  display: flex;
+  margin-top: 1.5rem;
+  margin-left: auto;
+}

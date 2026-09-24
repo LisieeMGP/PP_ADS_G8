@@ -1,0 +1,72 @@
+<section class="page-heading">
+  <div>
+    <p class="eyebrow">ACOMPANHAMENTO</p>
+    <h1>Consultar encomendas</h1>
+    <p class="muted">Pesquise por morador, unidade ou código de rastreio.</p>
+  </div>
+</section>
+<p-card class="panel delivery-table-panel"
+  ><ng-template #content
+    ><div class="filter-bar">
+      <input
+        pInputText
+        [(ngModel)]="searchTerm"
+        placeholder="Buscar por nome, unidade ou código"
+      /><label class="check-filter"
+        ><p-checkbox [binary]="true" [(ngModel)]="pendingOnly"></p-checkbox> Apenas pendentes</label
+      >
+    </div>
+    <p-table [value]="filteredDeliveries" responsiveLayout="scroll"
+      ><ng-template #header
+        ><tr>
+          <th>Encomenda</th>
+          <th>Destinatário</th>
+          <th>Recebida em</th>
+          <th>Situação</th>
+          <th></th></tr></ng-template
+      ><ng-template #body let-delivery
+        ><tr>
+          <td>
+            <strong class="tracking-code">{{ delivery.trackingCode }}</strong
+            ><small class="delivery-name">{{ delivery.description }}</small>
+          </td>
+          <td>
+            <strong class="resident-name">{{ residentName(delivery) }}</strong>
+            <small class="resident-address">Unidade {{ residentUnit(delivery) }}</small>
+          </td>
+          <td>{{ delivery.receivedAt | date: 'dd/MM/yyyy' }}</td>
+          <td>
+            <p-tag
+              [value]="delivery.status === 'pending' ? 'Aguardando retirada' : 'Retirada'"
+              [severity]="delivery.status === 'pending' ? 'warn' : 'success'"
+            ></p-tag>
+          </td>
+          <td>
+            @if (delivery.status === 'pending') {
+              <button
+                pButton
+                type="button"
+                size="small"
+                [outlined]="true"
+                (click)="openPickup(delivery)"
+              >
+                Registrar retirada
+              </button>
+            } @else {
+              <i class="pi pi-check-circle done-mark"></i>
+            }
+          </td></tr></ng-template
+      ><ng-template #emptymessage
+        ><tr>
+          <td colspan="5" class="empty-state">Nenhuma encomenda encontrada para esta pesquisa.</td>
+        </tr></ng-template
+      ></p-table
+    ></ng-template
+  ></p-card
+><app-pickup
+  [delivery]="selectedDelivery"
+  [residentName]="selectedDelivery ? residentName(selectedDelivery) : ''"
+  [(visible)]="pickupVisible"
+  (confirmed)="markAsPickedUp($event)"
+  (closed)="pickupVisible = false"
+></app-pickup>

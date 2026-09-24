@@ -1,0 +1,62 @@
+services:
+  encomendas-api:
+    image: localhost/encomendas-api:local
+    build:
+      context: ./encomendas-api
+    container_name: encomendas-api
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: encomendas_db
+      DB_USER: encomendas
+      DB_PASSWORD: encomendas
+    ports:
+      - "3001:3000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - encomendas-network
+
+  encomendas:
+    image: localhost/encomendas:local
+    build:
+      context: ./encomendas
+    container_name: encomendas
+    ports:
+      - "4200:80"
+    depends_on:
+      - encomendas-api
+    networks:
+      - encomendas-network
+
+  mysql:
+    image: localhost/encomendas-mysql:local
+    build:
+      context: ./database
+    container_name: encomendas-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: encomendas_db
+      MYSQL_USER: encomendas
+      MYSQL_PASSWORD: encomendas
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$$MYSQL_ROOT_PASSWORD"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks:
+      - encomendas-network
+
+volumes:
+  mysql-data:
+
+networks:
+  encomendas-network:
