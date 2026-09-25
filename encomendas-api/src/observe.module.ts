@@ -16,7 +16,7 @@ export const observeModule = ObserveModule.forRoot({
   endpoint: process.env.OBSERVE_ENDPOINT,
   debug: process.env.OBSERVE_DEBUG === 'true',
   outgoing: {
-    database: process.env.OBSERVE_DATABASE !== 'false',
+    database: process.env.OBSERVE_DATABASE === 'true',
     http: true,
   },
   http: {
