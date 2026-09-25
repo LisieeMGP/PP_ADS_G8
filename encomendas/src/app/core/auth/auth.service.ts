@@ -1,6 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 interface LoginResponse {
   access_token: string;
@@ -9,7 +10,7 @@ interface LoginResponse {
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
-  private readonly apiUrl = 'http://localhost:3001';
+  private readonly apiUrl = environment.apiUrl;
   private readonly tokenKey = 'encomendas.access_token';
   private readonly userKey = 'encomendas.user';
   readonly currentUser = signal<string | null>(localStorage.getItem(this.userKey));
