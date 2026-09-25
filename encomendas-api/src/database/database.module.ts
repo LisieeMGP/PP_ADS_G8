@@ -1,14 +1,15 @@
 import { Module } from '@nestjs/common';
-import { Pool } from 'pg';
+import { DataSource } from 'typeorm';
 import { DATABASE_POOL } from './database.constants.js';
 
 @Module({
   providers: [
     {
       provide: DATABASE_POOL,
-      useFactory: (): Pool =>
-        new Pool({
-          connectionString: process.env.DATABASE_URL,
+      useFactory: async (): Promise<DataSource> => {
+        const dataSource = new DataSource({
+          type: 'postgres',
+          url: process.env.DATABASE_URL,
           host: process.env.DATABASE_URL
             ? undefined
             : (process.env.DB_HOST ?? 'localhost'),
@@ -18,22 +19,26 @@ import { DATABASE_POOL } from './database.constants.js';
           database: process.env.DATABASE_URL
             ? undefined
             : (process.env.DB_NAME ?? 'encomendas_db'),
-          user: process.env.DATABASE_URL
+          username: process.env.DATABASE_URL
             ? undefined
             : (process.env.DB_USER ?? 'encomendas'),
           password: process.env.DATABASE_URL
             ? undefined
             : (process.env.DB_PASSWORD ?? 'encomendas'),
-          max: Number(process.env.DB_POOL_MAX ?? 10),
-          idleTimeoutMillis: Number(process.env.DB_IDLE_TIMEOUT_MS ?? 10000),
-          connectionTimeoutMillis: Number(
-            process.env.DB_CONNECTION_TIMEOUT_MS ?? 5000,
-          ),
+          schema: 'public',
+          synchronize: false,
+          logging: false,
+          entities: [],
           ssl:
-            process.env.DB_SSL === 'true'
+            process.env.DB_SSL === 'true' ||
+            process.env.DATABASE_URL?.includes('sslmode=require')
               ? { rejectUnauthorized: false }
               : undefined,
-        }),
+        });
+
+        await dataSource.initialize();
+        return dataSource;
+      },
     },
   ],
   exports: [DATABASE_POOL],
