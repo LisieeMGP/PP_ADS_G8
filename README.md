@@ -17,11 +17,11 @@ Aplicação web para gerenciamento de encomendas em condomínio, desenvolvida pe
 │       ├── deliveries/    # Registro, consulta e retirada de encomendas
 │       ├── residents/     # Cadastro e consulta de moradores
 │       ├── users/         # Usuários da aplicação
-│       └── database/      # Pool de conexão PostgreSQL
+│       └── database/      # DataSource TypeORM e conexão PostgreSQL
 └── docker-compose.yml     # Orquestra frontend, API e PostgreSQL
 ```
 
-O diretório `front/encomendas` contém uma cópia do frontend. A execução documentada neste arquivo usa a versão em `encomendas/`, referenciada pelo `docker-compose.yml`.
+A execução documentada neste arquivo usa o frontend em `encomendas/`, referenciado pelo `docker-compose.yml`.
 
 ## Pré-requisitos
 
@@ -59,7 +59,7 @@ Todos os comandos abaixo partem da raiz do repositório.
     docker compose ps
     ```
 
-5. Abra http://localhost:4200. Use `john` e `changeme` para o primeiro login.
+5. Abra http://localhost:4200. Use `john@example.com` e `changeme` para o primeiro login.
 
 6. Confirme que a API responde:
 
@@ -169,7 +169,7 @@ Login de teste:
 ```bash
 curl -X POST http://localhost:3001/auth/login \
   -H 'Content-Type: application/json' \
-  -d '{"username":"john","password":"changeme"}'
+    -d '{"username":"john@example.com","password":"changeme"}'
 ```
 
 ### PostgreSQL em container separado
@@ -198,9 +198,9 @@ docker volume rm postgres-data
 
 A API usa `@nestjs/observe` para coletar telemetria. `observe.module.ts` cria o módulo e o instrumentador, `app.module.ts` importa o módulo e `main.ts` passa `ObserveInstrument` para o bootstrap do NestJS.
 
-A instrumentação monitora requisições HTTP, runtime e providers do NestJS, chamadas HTTP de saída e o pool PostgreSQL. Após o login, o identificador `sub` do JWT é usado como `userId`; requisições sem usuário ficam como `anonymous`.
+A instrumentação monitora requisições HTTP, runtime e providers do NestJS e chamadas HTTP de saída. O acesso ao banco é feito por um `DataSource` do TypeORM, que mantém as queries SQL existentes sem entidades TypeORM. Após o login, o identificador `sub` do JWT é usado como `userId`; requisições sem usuário ficam como `anonymous`.
 
-O banco e chamadas HTTP de saída são rastreados por padrão. Use `OBSERVE_DATABASE=false` para desativar o rastreamento do banco e `OBSERVE_SOURCE_CONTEXT=false` para desativar o contexto de origem.
+O rastreamento de chamadas HTTP de saída fica ativo, mas o rastreamento do banco deve permanecer desativado (`OBSERVE_DATABASE=false`) nesta versão, pois a instrumentação de banco do Observe apresentou incompatibilidade em execução. `OBSERVE_SOURCE_CONTEXT=false` desativa o contexto de origem.
 
 Para execução local, configure `encomendas-api/.env`:
 
@@ -210,13 +210,31 @@ OBSERVE_APP_SECRET=your-app-secret
 OBSERVE_SERVICE_ID=encomendas-api
 OBSERVE_SERVICE_VERSION=1.0.0
 OBSERVE_ENDPOINT=https://observe-api.nestjs.com
-OBSERVE_DATABASE=true
+OBSERVE_DATABASE=false
 OBSERVE_DEBUG=false
 ```
 
-`OBSERVE_DEBUG=true` habilita logs de diagnóstico. Nunca versione ou exponha `OBSERVE_APP_KEY` e `OBSERVE_APP_SECRET`. No Render, configure essas variáveis como secrets do serviço da API.
+`OBSERVE_DEBUG=true` habilita logs de diagnóstico. Nunca versione ou exponha `OBSERVE_APP_KEY` e `OBSERVE_APP_SECRET`. No Render, configure essas variáveis no painel Environment do serviço da API, e não dependa de um arquivo `.env` publicado.
 
 ## Testes e qualidade
+
+No Render, configure as variáveis diretamente no serviço da API; o arquivo `.env` é somente para desenvolvimento local:
+
+```text
+PORT=3000
+DATABASE_URL=<URL do PostgreSQL>
+JWT_SECRET=<segredo longo e aleatório>
+CORS_ORIGINS=<URL pública do frontend>
+OBSERVE_APP_KEY=<opcional>
+OBSERVE_APP_SECRET=<opcional>
+OBSERVE_SERVICE_ID=encomendas-api
+OBSERVE_SERVICE_VERSION=1.0.0
+OBSERVE_ENDPOINT=https://observe-api.nestjs.com
+OBSERVE_DATABASE=false
+OBSERVE_DEBUG=false
+```
+
+Quando `DATABASE_URL` não for usada, a API aceita `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER` e `DB_PASSWORD`. Para conexões PostgreSQL com SSL, use `DB_SSL=true`.
 
 Na API:
 

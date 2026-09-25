@@ -1,143 +1,92 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Encomendas API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API REST do sistema de gerenciamento de encomendas, construída com NestJS 12, TypeScript, PostgreSQL, TypeORM e JWT.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Requisitos
 
-## Description
+- Node.js 22 ou superior
+- npm
+- PostgreSQL local ou uma `DATABASE_URL`
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
+## Instalação e execução
 
 ```bash
-$ npm install
+npm install
+npm run start:dev
 ```
 
-### Observe monitoring
+A API escuta `http://localhost:3001` por padrão. O Swagger está disponível em `http://localhost:3001/api`.
 
-The API uses `@nestjs/observe` to collect HTTP, runtime, provider, outbound HTTP,
-and PostgreSQL telemetry. Configure the Observe credentials through environment
-variables before starting the API:
+Para executar a stack completa, use os comandos na raiz do repositório:
 
 ```bash
-OBSERVE_APP_KEY=your-app-key
-OBSERVE_APP_SECRET=your-app-secret
+docker compose up -d --build
+docker compose logs -f encomendas-api
+```
+
+## Variáveis de ambiente
+
+Em desenvolvimento, crie `encomendas-api/.env`. No Render, cadastre as variáveis diretamente no painel do serviço, pois o Render não carrega automaticamente o arquivo `.env` do repositório.
+
+```text
+PORT=3000
+DATABASE_URL=postgresql://usuario:senha@host:5432/banco
+JWT_SECRET=um-segredo-longo-e-aleatorio
+CORS_ORIGINS=http://localhost:4200
+```
+
+Também são aceitas as variáveis separadas `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER` e `DB_PASSWORD` quando `DATABASE_URL` não for usada. Para PostgreSQL com SSL, defina `DB_SSL=true`.
+
+## Banco de dados
+
+O acesso ao PostgreSQL usa o `DataSource` do TypeORM. As consultas atuais continuam em SQL parametrizado e `synchronize` está desativado. O schema e os dados iniciais são criados por `database/init.sql` quando o volume do PostgreSQL é inicializado pela primeira vez.
+
+O login usa o e-mail do usuário como `username`:
+
+```bash
+curl -X POST http://localhost:3001/auth/login \
+  -H 'Content-Type: application/json' \
+  -d '{"username":"john@example.com","password":"changeme"}'
+```
+
+## Observabilidade
+
+O módulo `src/observe.module.ts` integra `@nestjs/observe` para telemetria de requisições HTTP, runtime, providers NestJS e chamadas HTTP de saída. O usuário autenticado é identificado pelo `sub` do JWT; requisições sem autenticação usam `anonymous`.
+
+Configure as credenciais quando o Observe for utilizado:
+
+```text
+OBSERVE_APP_KEY=<chave da aplicação>
+OBSERVE_APP_SECRET=<segredo da aplicação>
 OBSERVE_SERVICE_ID=encomendas-api
 OBSERVE_SERVICE_VERSION=1.0.0
 OBSERVE_ENDPOINT=https://observe-api.nestjs.com
-OBSERVE_DATABASE=true
+OBSERVE_DATABASE=false
 OBSERVE_DEBUG=false
 ```
 
-`OBSERVE_DATABASE` defaults to `true` and enables instrumentation of the
-`pg` pool. Set it to `false` only when database instrumentation is
-not desired. For local development, create a `.env` file in this API directory
-with these variables. The file is ignored by Git and loaded automatically.
-Credentials are intentionally not stored in the repository.
+`OBSERVE_DATABASE` deve permanecer `false` nesta versão. A instrumentação de banco do Observe apresentou incompatibilidade em execução com o acesso PostgreSQL; o acesso da aplicação continua sendo feito pelo TypeORM. `OBSERVE_DEBUG=true` habilita logs de diagnóstico.
 
-Set `OBSERVE_DEBUG=true` temporarily to enable diagnostic logs from the SDK.
-Never log or commit the values of `OBSERVE_APP_KEY` or `OBSERVE_APP_SECRET`.
+Nunca versione `OBSERVE_APP_KEY`, `OBSERVE_APP_SECRET`, `DATABASE_URL` ou `JWT_SECRET`. No Render, configure esses valores como variáveis do serviço.
 
-## Compile and run the project
+## Scripts
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm run build       # compila a API
+npm run start:dev   # desenvolvimento com watch
+npm run start:prod  # executa dist/main.js
+npm test            # testes unitários
+npm run test:e2e    # testes end-to-end
+npm run test:cov    # cobertura
+npm run lint        # análise estática
 ```
 
-## Run tests
+## Deploy no Render
 
-```bash
-# unit tests
-$ npm run test
+Crie um Web Service apontando para o diretório `encomendas-api` e configure:
 
-# e2e tests
-$ npm run test:e2e
+- Build Command: `npm install && npm run build`
+- Start Command: `npm run start:prod`
+- Health Check Path: `/`
 
-# test coverage
-$ npm run test:cov
-```
-
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Observability
-
-In production applications, observability is essential for understanding how your system behaves, detecting issues early, and maintaining reliable performance.
-
-[NestJS Observe](https://observe.nestjs.com) automatically instruments your NestJS application, giving you deep visibility into your system with minimal setup:
-
-- **Distributed tracing:** Follow requests across services and understand how they flow through your system.
-- **Waterfall analysis:** Visualize request execution and identify slow operations, bottlenecks, and unexpected delays.
-- **Performance analysis:** Analyze application performance in real time and quickly pinpoint areas that need optimization.
-- **Metrics:** Track key application and infrastructure metrics to understand system health and performance trends.
-- **Logging:** Centralize and correlate logs with traces and other telemetry to make debugging easier.
-- **Error tracking:** Detect errors quickly and investigate their root causes with the surrounding context.
-- **SLA monitoring:** Track service-level objectives and identify when your application is approaching or exceeding defined thresholds.
-- **Alarms and alerts:** Set up alerts for critical errors, performance degradation, SLA violations, and other anomalies so your team can react quickly.
-
-This project is instrumented through `src/observe.module.ts`. Create a free account at [observe.nestjs.com](https://observe.nestjs.com), add an application, and provide the generated app key and secret through `OBSERVE_APP_KEY` and `OBSERVE_APP_SECRET`.
-
-The free plan needs no payment details and covers 300,000 events a month. You can also browse the [live demo](https://www.observe-demo.nestjs.com/dashboard) first - the whole dashboard over a busy service's data, with nothing to install.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Auto-instrument your application with [NestJS Observe](https://observe.nestjs.com). Distributed tracing, metrics, and logging made easy. Error tracking and performance monitoring for your NestJS applications.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+Cadastre `DATABASE_URL`, `JWT_SECRET`, `CORS_ORIGINS` e `OBSERVE_DATABASE=false` no painel Environment. Use em `CORS_ORIGINS` a URL pública do frontend, sem barra final.
