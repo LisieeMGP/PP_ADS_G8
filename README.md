@@ -116,6 +116,123 @@ Porta:        5432
 
 Ao executar a API diretamente no host, ela usa `localhost:5432` por padrão. As variáveis aceitas são `DATABASE_URL` ou, separadamente, `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER` e `DB_PASSWORD`.
 
+## Acessar o PostgreSQL no Render via terminal
+
+Como o Render não disponibiliza um cliente de banco no navegador, o acesso ao PostgreSQL pode ser feito via terminal usando `psql`.
+
+### 1. Conectar ao banco
+
+Primeiro, defina a URL de conexão do banco no ambiente:
+
+```bash
+export DATABASE_URL="postgresql://<usuario>:<senha>@<host>:5432/<database>"
+```
+
+Em seguida, conecte-se ao banco:
+
+```bash
+psql "$DATABASE_URL"
+```
+
+Se o cliente `psql` não estiver instalado, instale com:
+
+```bash
+sudo apt update
+sudo apt install postgresql-client
+```
+
+### 2. Executar o script inicial do banco
+
+O script de criação das tabelas e inserção dos dados iniciais está em `database/init.sql`.
+
+Para executar o arquivo no banco remoto:
+
+```bash
+psql "$DATABASE_URL" -f database/init.sql
+```
+
+Para listar as tabelas do banco após conectar:
+
+```sql
+\dt
+```
+
+Ou para uma visão textual via SQL:
+
+```sql
+SELECT table_name
+FROM information_schema.tables
+WHERE table_schema = 'public'
+ORDER BY table_name;
+```
+
+Para ver as colunas de uma tabela específica:
+
+```sql
+\d moradores
+```
+
+Ou via SQL:
+
+```sql
+SELECT column_name, data_type
+FROM information_schema.columns
+WHERE table_schema = 'public'
+  AND table_name = 'moradores'
+ORDER BY ordinal_position;
+```
+
+### 3. Consultar e alterar dados
+
+Exemplos de consulta:
+
+```sql
+SELECT * FROM usuarios;
+SELECT * FROM moradores;
+SELECT * FROM encomendas;
+```
+
+Inserir um morador novo:
+
+```sql
+INSERT INTO moradores (nome, bloco, unidade)
+VALUES ('Ana Souza', 'C', '305');
+```
+
+Alterar dados de morador:
+
+```sql
+UPDATE moradores
+SET nome = 'Ana Costa', bloco = 'D'
+WHERE unidade = '305';
+```
+
+Inserir uma encomenda:
+
+```sql
+INSERT INTO encomendas (usuario_id, morador_id, codigo_rastreio, status, descricao)
+VALUES (1, 1, 'BR999999999', 'AGUARDANDO_RETIRADA', 'Livro didatico');
+```
+
+Marcar encomenda como retirada:
+
+```sql
+UPDATE encomendas
+SET status = 'RETIRADA', data_retirada = CURRENT_TIMESTAMP
+WHERE codigo_rastreio = 'BR999999999';
+```
+
+### 4. Validar a persistência
+
+Após operações pela aplicação, use consultas no banco para confirmar a persistência:
+
+```sql
+SELECT id, nome, bloco, unidade FROM moradores;
+SELECT id, morador_id, status, descricao, codigo_rastreio FROM encomendas;
+```
+
+Essa abordagem é útil para testar o comportamento da aplicação em produção quando não há cliente gráfico do PostgreSQL disponível no Render.
+
 ## Executar os projetos individualmente
 
 ### Frontend
