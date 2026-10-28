@@ -1,6 +1,6 @@
 # Projeto de Prática Profissional em ADS
 
-Aplicação web para gerenciamento de encomendas em condomínio, desenvolvida pelo Grupo 8. O projeto é composto por um frontend Angular, uma API REST em NestJS e um banco PostgreSQL.
+Aplicação web para gerenciamento de encomendas em condomínios residenciais, desenvolvida pelo Grupo 8. O projeto é composto por um frontend Angular, uma API REST em NestJS e um banco PostgreSQL.
 
 ## Estrutura do projeto
 

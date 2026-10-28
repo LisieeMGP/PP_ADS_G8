@@ -1,6 +1,6 @@
 # Encomendas API
 
-API REST do sistema de gerenciamento de encomendas, construída com NestJS 12, TypeScript, PostgreSQL, TypeORM e JWT.
+API REST do sistema de gerenciamento de encomendas residenciais, construída com NestJS 12, TypeScript, PostgreSQL, TypeORM e JWT.
 
 ## Requisitos
 
