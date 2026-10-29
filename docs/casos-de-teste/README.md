@@ -17,6 +17,7 @@ Este diretório reúne os casos de teste e os scripts de teste conforme o padrã
 - [TST-004-cadastro-morador-mesmo-endereco-falha.md](TST-004-cadastro-morador-mesmo-endereco-falha.md)
 - [TST-005-registro-encomenda-sucesso.md](TST-005-registro-encomenda-sucesso.md)
 - [TST-006-retirada-encomenda-sucesso.md](TST-006-retirada-encomenda-sucesso.md)
+- [TST-007-retirada-encomenda-falha.md](TST-007-retirada-encomenda-falha.md)
 
 ## Observação
 
