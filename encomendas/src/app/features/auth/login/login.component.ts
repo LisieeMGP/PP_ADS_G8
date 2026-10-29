@@ -1,7 +1,6 @@
 import { Component, inject, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
 import { PasswordModule } from 'primeng/password';
@@ -11,7 +10,7 @@ import { AuthService } from '../../../core/auth/auth.service';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ButtonModule, CardModule, FormsModule, InputTextModule, MessageModule, PasswordModule],
+  imports: [ButtonModule, FormsModule, InputTextModule, MessageModule, PasswordModule],
   styleUrl: './login.component.scss',
   templateUrl: './login.component.html',
 })

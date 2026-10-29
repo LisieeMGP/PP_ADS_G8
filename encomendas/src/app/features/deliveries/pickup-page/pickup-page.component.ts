@@ -17,24 +17,36 @@ export class PickupPageComponent {
   protected deliveries: Delivery[] = [];
   protected selectedId: number | undefined;
   protected message = '';
+  protected messageType: 'success' | 'error' | '' = '';
+  protected confirming = false;
 
   constructor() {
     this.load();
   }
 
   protected confirm(): void {
-    if (!this.selectedId) return;
+    if (!this.selectedId || this.confirming) return;
+
+    this.message = '';
+    this.messageType = '';
+    this.confirming = true;
     this.deliveriesService.pickup(this.selectedId).subscribe({
       next: () => {
         this.message = 'Retirada registrada com sucesso.';
+        this.messageType = 'success';
+        this.confirming = false;
         this.load();
         this.selectedId = undefined;
       },
-      error: () => this.message = 'Não foi possível registrar a retirada.',
+      error: () => {
+        this.message = 'Não foi possível registrar a retirada. Tente novamente.';
+        this.messageType = 'error';
+        this.confirming = false;
+      },
     });
   }
 
   private load(): void {
-    this.deliveriesService.list('', true).subscribe(deliveries => this.deliveries = deliveries);
+    this.deliveriesService.list('', true).subscribe((deliveries) => (this.deliveries = deliveries));
   }
 }

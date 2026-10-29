@@ -44,6 +44,12 @@ To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use th
 ng test
 ```
 
+## Application feedback and home page
+
+The resident registration and package pickup screens show an inline success or error message after the API responds. Failed resident registrations keep the entered values available for correction or retry. The home page also displays a local SVG illustration (`public/app-illustration.svg`) that does not require an external image service.
+
+When building the Docker Compose frontend, `APP_API_URL` selects the API URL embedded in the static application. The repository Compose configuration sets it to `http://localhost:3001` so the user's browser talks to the local API; production builds default to the Render API URL.
+
 ## Running end-to-end tests
 
 For end-to-end (e2e) testing, run:

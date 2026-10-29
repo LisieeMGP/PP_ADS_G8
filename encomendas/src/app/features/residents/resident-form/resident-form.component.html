@@ -49,9 +49,20 @@
         />
       </div>
     </div>
-    <button pButton type="submit">
+    @if (message) {
+      <p
+        class="form-feedback"
+        [class.success]="messageType === 'success'"
+        [class.error]="messageType === 'error'"
+        [attr.role]="messageType === 'error' ? 'alert' : 'status'"
+        aria-live="polite"
+      >
+        {{ message }}
+      </p>
+    }
+    <button pButton type="submit" [disabled]="saving">
       <i class="pi pi-check" aria-hidden="true"></i>
-      <span>Salvar morador</span>
+      <span>{{ saving ? 'Salvando...' : 'Salvar morador' }}</span>
     </button>
   </form></p-card
 >

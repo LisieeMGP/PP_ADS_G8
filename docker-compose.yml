@@ -7,6 +7,7 @@ services:
     environment:
       NODE_ENV: production
       PORT: 3000
+      CORS_ORIGINS: http://localhost:4200
       DB_HOST: postgres
       DB_PORT: 5432
       DB_NAME: encomendas_db
@@ -24,6 +25,8 @@ services:
     image: localhost/encomendas:local
     build:
       context: ./encomendas
+      args:
+        APP_API_URL: http://localhost:3001
     container_name: encomendas
     ports:
       - "4200:80"

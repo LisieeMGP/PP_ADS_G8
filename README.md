@@ -23,6 +23,12 @@ Aplicação web para gerenciamento de encomendas em condomínios residenciais, d
 
 A execução documentada neste arquivo usa o frontend em `encomendas/`, referenciado pelo `docker-compose.yml`.
 
+## Alterações da versão 2
+
+- Refazimento da tela de login, com layout mais responsivo para diferentes tamanhos de tela.
+- Inclusão de feedback de sucesso ou erro após o cadastro de moradores.
+- Inclusão de feedback de sucesso ou erro após a confirmação da retirada de encomendas.
+
 ## Pré-requisitos
 
 Para executar a stack completa, instale o Docker Engine e o Docker Compose. O daemon do Docker deve estar em execução.
@@ -66,6 +72,8 @@ Todos os comandos abaixo partem da raiz do repositório.
     ```bash
     curl http://localhost:3001/
     ```
+
+O frontend do Compose é compilado para acessar a API publicada no host em `http://localhost:3001`, e a API local permite a origem `http://localhost:4200`. Se alterar essa configuração, reconstrua os serviços com `docker compose up -d --build`. A URL `https://encomendas-api.onrender.com` permanece como padrão para builds de produção fora do Compose local.
 
 Na primeira execução, a construção pode levar alguns minutos e o PostgreSQL precisa concluir o healthcheck antes de a API iniciar. Se algum serviço não subir, consulte `docker compose logs -f`. As portas `4200`, `3001` e `5432` precisam estar livres.
 
