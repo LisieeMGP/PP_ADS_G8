@@ -35,6 +35,7 @@
 
 - O sistema deve criar o morador com sucesso.
 - Deve exibir mensagem de confirmação de cadastro.
+- Após a confirmação, o formulário deve ser limpo.
 - O novo morador deve ficar disponível para associação com encomendas.
 
 ## 5. Resultado obtido

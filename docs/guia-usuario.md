@@ -24,7 +24,7 @@ Ao autenticar com sucesso, o sistema redireciona o usuário para a área inicial
 
 ### 3.1 Página inicial
 
-A página inicial apresenta a visão geral do sistema e permite que o usuário navegue para as principais áreas do sistema.
+A página inicial apresenta a visão geral do sistema, uma ilustração da rotina de encomendas na portaria e permite que o usuário navegue para as principais áreas do sistema.
 
 ### 3.2 Cadastro de moradores
 
@@ -36,7 +36,7 @@ Campos normalmente esperados:
 - Bloco
 - Unidade
 
-Após salvar, o morador fica disponível para associação com encomendas.
+Após selecionar **Salvar morador**, uma mensagem informa se o cadastro foi concluído. Em caso de erro, os dados permanecem no formulário para que possam ser corrigidos ou enviados novamente. Quando salvo, o morador fica disponível para associação com encomendas.
 
 ### 3.3 Registro de encomendas
 
@@ -68,6 +68,7 @@ Ao confirmar a retirada:
 - o status muda para `RETIRADA`
 - a data de retirada é registrada
 - o usuário responsável pela retirada é armazenado
+- uma mensagem informa se a retirada foi registrada ou se ocorreu um erro
 
 ## 4. Fluxo típico de uso
 

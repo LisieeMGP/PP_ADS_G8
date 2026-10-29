@@ -36,7 +36,8 @@
 ## 4. Resultado esperado
 
 - O sistema deve impedir o cadastro do morador duplicado.
-- Deve apresentar erro de validação ou mensagem de falha de integridade.
+- Deve apresentar uma mensagem informando que não foi possível cadastrar o morador.
+- Os dados digitados devem permanecer no formulário para correção ou nova tentativa.
 - O banco deve continuar com o mesmo número de registros e sem duplicação de endereço.
 
 ## 5. Resultado obtido
@@ -56,4 +57,4 @@
 
 ## 6. Observação do cenário de falha
 
-Este caso reproduz a situação atual do sistema em que o banco possui a restrição `UNIQUE (bloco, unidade)`. Como consequência, a tentativa de cadastrar um segundo morador no mesmo endereço gera erro de integridade em vez de uma mensagem de negócio amigável. Este teste deve registrar exatamente esse comportamento para futura correção da regra.
+Este caso reproduz a restrição `UNIQUE (bloco, unidade)` do banco. A resposta de erro da API deve ser apresentada como uma mensagem de falha na interface, sem apagar os dados do formulário.

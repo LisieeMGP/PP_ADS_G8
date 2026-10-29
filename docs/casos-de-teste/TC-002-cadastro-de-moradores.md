@@ -22,8 +22,10 @@ Avaliar o comportamento do sistema na criação de moradores, verificando tanto 
 ## 5. Critérios de validação
 
 - O sistema deve permitir o cadastro quando os dados são válidos.
+- Após a resposta da API, a interface deve informar o sucesso do cadastro.
 - O sistema deve impedir cadastros com dados obrigatórios ausentes.
 - O sistema deve bloquear a duplicidade de endereço por bloco e unidade quando a regra de integridade for violada.
+- Em caso de falha, a interface deve informar o erro e preservar os dados digitados para nova tentativa.
 
 ## 6. Observações
 

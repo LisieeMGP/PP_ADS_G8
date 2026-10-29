@@ -23,6 +23,7 @@
 - A data de retirada deve ser registrada.
 - O usuário responsável pela retirada deve ser gravado no banco.
 - A encomenda não deve continuar no estado pendente.
+- A interface deve apresentar mensagem de sucesso após a confirmação da API.
 
 ## 3. Passos para execução
 
