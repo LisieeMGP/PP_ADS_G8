@@ -19,16 +19,34 @@ export class ResidentFormComponent {
   protected name = '';
   protected block = '';
   protected unit = '';
+  protected message = '';
+  protected messageType: 'success' | 'error' | '' = '';
+  protected saving = false;
 
   protected submit(): void {
-    if (!this.name.trim() || !this.unit.trim()) return;
+    if (this.saving || !this.name.trim() || !this.unit.trim()) return;
+
+    this.message = '';
+    this.messageType = '';
+    this.saving = true;
     this.residentsService
       .create({ name: this.name.trim(), block: this.block.trim() || '-', unit: this.unit.trim() })
-      .subscribe((resident) => {
-        this.saved.emit(resident);
-        this.name = '';
-        this.block = '';
-        this.unit = '';
+      .subscribe({
+        next: (resident) => {
+          this.saved.emit(resident);
+          this.name = '';
+          this.block = '';
+          this.unit = '';
+          this.message = 'Morador cadastrado com sucesso.';
+          this.messageType = 'success';
+          this.saving = false;
+        },
+        error: () => {
+          this.message =
+            'Não foi possível cadastrar o morador. Verifique os dados e tente novamente.';
+          this.messageType = 'error';
+          this.saving = false;
+        },
       });
   }
 }

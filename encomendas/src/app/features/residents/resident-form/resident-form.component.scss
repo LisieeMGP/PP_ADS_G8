@@ -17,3 +17,19 @@
   margin-top: 1.5rem;
   margin-left: auto;
 }
+
+.form-feedback {
+  margin: 1.25rem 0 0;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+}
+
+.form-feedback.success {
+  color: #17613d;
+  background: #e8f5ec;
+}
+
+.form-feedback.error {
+  color: #9c2c2c;
+  background: #fdecec;
+}
