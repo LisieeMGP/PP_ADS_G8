@@ -11,3 +11,18 @@
 .dashboard-grid > p-card {
   margin: 0.25rem;
 }
+
+.home-illustration {
+  width: clamp(7rem, 15vw, 11rem);
+  height: auto;
+  flex: 0 0 auto;
+  align-self: center;
+}
+
+@media (max-width: 620px) {
+  .home-illustration {
+    width: 7rem;
+    align-self: flex-end;
+    margin-top: -1rem;
+  }
+}
