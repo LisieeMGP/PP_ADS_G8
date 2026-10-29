@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { of, throwError } from 'rxjs';
+import { of, Subject, throwError } from 'rxjs';
 import { Delivery } from '../../../models';
 import { DeliveriesService } from '../deliveries.service';
 import { PickupPageComponent } from './pickup-page.component';
@@ -42,6 +42,29 @@ describe('PickupPageComponent', () => {
     expect(deliveriesServiceMock.pickup).toHaveBeenCalledWith(delivery.id);
     expect(fixture.nativeElement.querySelector('.pickup-feedback').textContent).toContain(
       'Retirada registrada com sucesso.',
+    );
+    expect(fixture.nativeElement.querySelector('button').textContent).toContain(
+      'Confirmar retirada',
+    );
+  });
+
+  it('updates the button and feedback after an asynchronous successful response', async () => {
+    const response = new Subject<Delivery>();
+    deliveriesServiceMock.pickup.mockReturnValue(response);
+    selectDeliveryAndConfirm();
+    fixture.autoDetectChanges();
+
+    expect(fixture.nativeElement.querySelector('button').textContent).toContain('Confirmando...');
+
+    response.next(delivery);
+    response.complete();
+    await fixture.whenStable();
+
+    expect(fixture.nativeElement.querySelector('.pickup-feedback').textContent).toContain(
+      'Retirada registrada com sucesso.',
+    );
+    expect(fixture.nativeElement.querySelector('button').textContent).toContain(
+      'Confirmar retirada',
     );
   });
 

@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { of, throwError } from 'rxjs';
+import { of, Subject, throwError } from 'rxjs';
 import { Resident } from '../../../models';
 import { ResidentsService } from '../residents.service';
 import { ResidentFormComponent } from './resident-form.component';
@@ -57,6 +57,29 @@ describe('ResidentFormComponent', () => {
     expect(fixture.nativeElement.querySelector('.form-feedback').textContent).toContain(
       'Morador cadastrado com sucesso.',
     );
+    expect(fixture.nativeElement.querySelector('button').textContent).toContain('Salvar morador');
+  });
+
+  it('updates the button and feedback after an asynchronous successful response', async () => {
+    const response = new Subject<Resident>();
+    residentsServiceMock.create.mockReturnValue(response);
+    fixture.autoDetectChanges();
+    enterResidentDetails();
+    fixture.nativeElement
+      .querySelector('form')
+      .dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('button').textContent).toContain('Salvando...');
+
+    response.next(resident);
+    response.complete();
+    await fixture.whenStable();
+
+    expect(fixture.nativeElement.querySelector('.form-feedback').textContent).toContain(
+      'Morador cadastrado com sucesso.',
+    );
+    expect(fixture.nativeElement.querySelector('button').textContent).toContain('Salvar morador');
   });
 
   it('shows an error and preserves the form when saving fails', async () => {

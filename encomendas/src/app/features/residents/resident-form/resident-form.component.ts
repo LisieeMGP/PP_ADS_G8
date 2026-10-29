@@ -1,10 +1,13 @@
-import { Component, inject, output } from '@angular/core';
+import { Component, inject, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
+import { finalize, TimeoutError, timeout } from 'rxjs';
 import { Resident } from '../../../models';
 import { ResidentsService } from '../residents.service';
+
+const REQUEST_TIMEOUT_MS = 20_000;
 
 @Component({
   selector: 'app-resident-form',
@@ -19,33 +22,38 @@ export class ResidentFormComponent {
   protected name = '';
   protected block = '';
   protected unit = '';
-  protected message = '';
-  protected messageType: 'success' | 'error' | '' = '';
-  protected saving = false;
+  protected readonly message = signal('');
+  protected readonly messageType = signal<'success' | 'error' | ''>('');
+  protected readonly saving = signal(false);
 
   protected submit(): void {
-    if (this.saving || !this.name.trim() || !this.unit.trim()) return;
+    if (this.saving() || !this.name.trim() || !this.unit.trim()) return;
 
-    this.message = '';
-    this.messageType = '';
-    this.saving = true;
+    this.message.set('');
+    this.messageType.set('');
+    this.saving.set(true);
     this.residentsService
       .create({ name: this.name.trim(), block: this.block.trim() || '-', unit: this.unit.trim() })
+      .pipe(
+        timeout({ first: REQUEST_TIMEOUT_MS }),
+        finalize(() => this.saving.set(false)),
+      )
       .subscribe({
         next: (resident) => {
           this.saved.emit(resident);
           this.name = '';
           this.block = '';
           this.unit = '';
-          this.message = 'Morador cadastrado com sucesso.';
-          this.messageType = 'success';
-          this.saving = false;
+          this.message.set('Morador cadastrado com sucesso.');
+          this.messageType.set('success');
         },
-        error: () => {
-          this.message =
-            'Não foi possível cadastrar o morador. Verifique os dados e tente novamente.';
-          this.messageType = 'error';
-          this.saving = false;
+        error: (error: unknown) => {
+          this.message.set(
+            error instanceof TimeoutError
+              ? 'A API demorou para responder. Verifique se o morador foi cadastrado antes de tentar novamente.'
+              : 'Não foi possível cadastrar o morador. Verifique os dados e tente novamente.',
+          );
+          this.messageType.set('error');
         },
       });
   }

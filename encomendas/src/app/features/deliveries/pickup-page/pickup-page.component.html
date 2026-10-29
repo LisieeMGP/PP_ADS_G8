@@ -13,28 +13,28 @@
         inputId="pickup-delivery"
         name="pickupDelivery"
         [(ngModel)]="selectedId"
-        [options]="deliveries"
+        [options]="deliveries()"
         optionLabel="description"
         optionValue="id"
         placeholder="Selecione uma encomenda"
         class="full-field"
       ></p-select>
     </div>
-    @if (message) {
+    @if (message()) {
       <p
         class="pickup-feedback"
-        [class.success]="messageType === 'success'"
-        [class.error]="messageType === 'error'"
-        [attr.role]="messageType === 'error' ? 'alert' : 'status'"
+        [class.success]="messageType() === 'success'"
+        [class.error]="messageType() === 'error'"
+        [attr.role]="messageType() === 'error' ? 'alert' : 'status'"
         aria-live="polite"
       >
-        {{ message }}
+        {{ message() }}
       </p>
     }
     <div class="pickup-actions">
-      <button pButton type="button" [disabled]="!selectedId || confirming" (click)="confirm()">
+      <button pButton type="button" [disabled]="!selectedId || confirming()" (click)="confirm()">
         <i class="pi pi-check" aria-hidden="true"></i>
-        <span>{{ confirming ? 'Confirmando...' : 'Confirmar retirada' }}</span>
+        <span>{{ confirming() ? 'Confirmando...' : 'Confirmar retirada' }}</span>
       </button>
     </div></ng-template
   ></p-card

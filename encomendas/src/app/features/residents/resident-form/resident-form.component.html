@@ -49,20 +49,20 @@
         />
       </div>
     </div>
-    @if (message) {
+    @if (message()) {
       <p
         class="form-feedback"
-        [class.success]="messageType === 'success'"
-        [class.error]="messageType === 'error'"
-        [attr.role]="messageType === 'error' ? 'alert' : 'status'"
+        [class.success]="messageType() === 'success'"
+        [class.error]="messageType() === 'error'"
+        [attr.role]="messageType() === 'error' ? 'alert' : 'status'"
         aria-live="polite"
       >
-        {{ message }}
+        {{ message() }}
       </p>
     }
-    <button pButton type="submit" [disabled]="saving">
+    <button pButton type="submit" [disabled]="saving()">
       <i class="pi pi-check" aria-hidden="true"></i>
-      <span>{{ saving ? 'Salvando...' : 'Salvar morador' }}</span>
+      <span>{{ saving() ? 'Salvando...' : 'Salvar morador' }}</span>
     </button>
   </form></p-card
 >
