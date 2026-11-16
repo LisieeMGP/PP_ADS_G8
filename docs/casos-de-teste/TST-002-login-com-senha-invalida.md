@@ -38,15 +38,15 @@
 
 ## 5. Resultado obtido
 
-- [ ] Sucesso
+- [x] Sucesso
 - [ ] Não Executado
 - [ ] Falha
 - [ ] Cancelado
 
 ### Descrição do resultado obtido
 
--
+O sistema rejeitou corretamente a tentativa de autenticação realizada com senha inválida. O usuário permaneceu na tela de login e foi exibida a mensagem “Confira seu usuário e senha para continuar.”, sem permitir o acesso às funcionalidades da aplicação. O resultado obtido está de acordo com o resultado esperado.
 
 ### Data da última execução
 
-- **/**/\_\_\_\_
+15/11/2026
