@@ -42,18 +42,18 @@
 
 ## 5. Resultado obtido
 
-- [ ] Sucesso
+- [x] Sucesso
 - [ ] Não Executado
 - [ ] Falha
 - [ ] Cancelado
 
 ### Descrição do resultado obtido
 
--
+O sistema impediu corretamente o cadastro de um segundo morador no mesmo endereço já existente. Ao tentar cadastrar o morador Pedro Santos no bloco A, unidade 101, foi exibida a mensagem “Não foi possível cadastrar o morador. Verifique os dados e tente novamente.”, sem concluir o cadastro. O resultado obtido está de acordo com o resultado esperado.
 
 ### Data da última execução
 
-- **/**/\_\_\_\_
+15/11/2026
 
 ## 6. Observação do cenário de falha
 
