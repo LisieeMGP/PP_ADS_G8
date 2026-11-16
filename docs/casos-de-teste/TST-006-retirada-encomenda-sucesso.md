@@ -27,7 +27,7 @@
 
 ## 3. Passos para execução
 
-1. Acessar a funcionalidade de retirada de encomendas.
+1. Acessar a funcionalidade de "Consultar encomendas".
 2. Selecionar a encomenda pendente `BR111222333`.
 3. Confirmar a retirada.
 
@@ -39,15 +39,15 @@
 
 ## 5. Resultado obtido
 
-- [ ] Sucesso
+- [x] Sucesso
 - [ ] Não Executado
 - [ ] Falha
 - [ ] Cancelado
 
 ### Descrição do resultado obtido
 
--
+O sistema registrou corretamente a retirada da encomenda. Após a confirmação da operação, o registro passou a apresentar a situação “Retirada” na consulta de encomendas, deixando de constar como pendente. O resultado obtido está de acordo com o resultado esperado.
 
 ### Data da última execução
 
-- **/**/\_\_\_\_
+15/11/2026
