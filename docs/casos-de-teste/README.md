@@ -8,6 +8,7 @@ Este diretório reúne os casos de teste e os scripts de teste conforme o padrã
 - [TC-002-cadastro-de-moradores.md](TC-002-cadastro-de-moradores.md)
 - [TC-003-registro-de-encomendas.md](TC-003-registro-de-encomendas.md)
 - [TC-004-retirada-de-encomendas.md](TC-004-retirada-de-encomendas.md)
+- [TC-005-consulta-encomendas.md](TC-005-consulta-encomendas.md)
 
 ## Scripts de teste (TST)
 
@@ -17,6 +18,8 @@ Este diretório reúne os casos de teste e os scripts de teste conforme o padrã
 - [TST-004-cadastro-morador-mesmo-endereco-falha.md](TST-004-cadastro-morador-mesmo-endereco-falha.md)
 - [TST-005-registro-encomenda-sucesso.md](TST-005-registro-encomenda-sucesso.md)
 - [TST-006-retirada-encomenda-sucesso.md](TST-006-retirada-encomenda-sucesso.md)
+- [TST-007-consulta-encomendas-cadastradas](TST-007-consulta-encomendas-cadastradas)
+- [TST-008-consulta-encomendas-pendentes](TST-008-consulta-encomendas-pendentes)
 
 ## Observação
 
