@@ -42,15 +42,15 @@
 
 ## 5. Resultado obtido
 
-- [ ] Sucesso
+- [x] Sucesso
 - [ ] Não Executado
 - [ ] Falha
 - [ ] Cancelado
 
 ### Descrição do resultado obtido
 
--
+A encomenda foi registrada com sucesso e passou a constar na consulta de encomendas. O registro foi apresentado associado ao morador Joao da Silva, com a descrição “Monitor para escritório” e situação “Aguardando retirada”, conforme definido no resultado esperado. O resultado obtido está de acordo com o esperado.
 
 ### Data da última execução
 
-- **/**/\_\_\_\_
+15/11/2026
