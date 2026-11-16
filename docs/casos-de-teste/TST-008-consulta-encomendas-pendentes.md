@@ -46,15 +46,15 @@
 
 ## 5. Resultado obtido
 
-* [ ] Sucesso
+* [x] Sucesso
 * [ ] Não Executado
 * [ ] Falha
 * [ ] Cancelado
 
 ### Descrição do resultado obtido
 
-* .
+O sistema filtrou corretamente as encomendas pendentes. Após selecionar a opção “Apenas pendentes”, foi apresentada somente a encomenda BRPENDENTE001, associada ao morador Joao da Silva e com a situação “Aguardando retirada”. As encomendas anteriormente registradas com situação “Retirada” não foram exibidas. O resultado obtido está de acordo com o resultado esperado.
 
 ### Data da última execução
 
-* __/__/____
+15/11/2026
