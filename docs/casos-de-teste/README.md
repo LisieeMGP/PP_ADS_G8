@@ -21,6 +21,11 @@ Este diretório reúne os casos de teste e os scripts de teste conforme o padrã
 - [TST-007-consulta-encomendas-cadastradas](TST-007-consulta-encomendas-cadastradas)
 - [TST-008-consulta-encomendas-pendentes](TST-008-consulta-encomendas-pendentes)
 
+## Métricas dos testes
+
+- [Metricas-dos-Testes.md](Metricas-dos-Testes.md)
+
+
 ## Observação
 
 Os documentos seguem o padrão da Aula 4:
