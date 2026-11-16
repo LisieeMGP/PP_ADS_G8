@@ -40,15 +40,15 @@
 
 ## 5. Resultado obtido
 
-- [ ] Sucesso
+- [x] Sucesso
 - [ ] Não Executado
 - [ ] Falha
 - [ ] Cancelado
 
 ### Descrição do resultado obtido
 
--
+O sistema realizou corretamente o cadastro do morador com os dados informados. Após o acionamento da opção de salvar, foi exibida a mensagem “Morador cadastrado com sucesso.”, confirmando a conclusão da operação. O resultado obtido está de acordo com o resultado esperado.
 
 ### Data da última execução
 
-- **/**/\_\_\_\_
+15/11/2026
