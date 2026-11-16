@@ -2,7 +2,7 @@
 
 ## Métricas por caso de uso
 
-### CDU001 / TC-001 - Autenticação do sistema
+### UC-001 / TC-001 - Autenticação do sistema
 
 **Rft (Requirements for Test) = 2**
 
@@ -32,7 +32,7 @@ $$
 
 ---
 
-### CDU002 / TC-002 - Cadastro de moradores
+### UC-002 / TC-002 - Cadastro de moradores
 
 **Rft (Requirements for Test) = 2**
 
@@ -62,7 +62,7 @@ $$
 
 ---
 
-### CDU003 / TC-003 - Registro de encomendas
+### UC-003 / TC-003 - Registro de encomendas
 
 **Rft (Requirements for Test) = 1**
 
@@ -92,7 +92,7 @@ $$
 
 ---
 
-### CDU005 / TC-004 - Retirada de encomendas
+### UC-005 / TC-004 - Retirada de encomendas
 
 **Rft (Requirements for Test) = 1**
 
@@ -122,7 +122,7 @@ $$
 
 ---
 
-### CDU004 / TC-005 - Consulta de encomendas
+### UC-004 / TC-005 - Consulta de encomendas
 
 **Rft (Requirements for Test) = 2**
 
